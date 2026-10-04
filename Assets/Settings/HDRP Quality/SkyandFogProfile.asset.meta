@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bb4d942776c30b14ea559c02ab902e41
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 185778
+  packageName: HDRPLabCar Free
+  packageVersion: 2.0.0
+  assetPath: Assets/Settings/HDRP Quality/SkyandFogProfile.asset
+  uploadId: 979722

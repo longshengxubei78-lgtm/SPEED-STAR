@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 809d313ab5406854b9711e004e249e10
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 185778
+  packageName: HDRPLabCar Free
+  packageVersion: 2.0.0
+  assetPath: Assets/Settings/HDRP Pofile/Lab_CameraProfile.asset
+  uploadId: 979722

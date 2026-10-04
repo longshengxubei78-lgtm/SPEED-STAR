@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3df95dc1bfc8c934a94772da9720dd88
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 185778
+  packageName: HDRPLabCar Free
+  packageVersion: 2.0.0
+  assetPath: Assets/Settings/HDRP Lighting/HDRPLabLighting.lighting
+  uploadId: 979722

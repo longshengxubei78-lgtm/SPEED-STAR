@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 07c938ebad6fec64c9ef5369dc28cea4
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 185778
+  packageName: HDRPLabCar Free
+  packageVersion: 2.0.0
+  assetPath: Assets/Settings/HDRP Pofile/Lab_Track.asset
+  uploadId: 979722

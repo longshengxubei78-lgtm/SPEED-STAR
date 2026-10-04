@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: eb1a8eba0cf3d784d9bd24dfc404e669
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 185778
+  packageName: HDRPLabCar Free
+  packageVersion: 2.0.0
+  assetPath: Assets/Settings/HDRP Quality/HDRP High.asset
+  uploadId: 979722
