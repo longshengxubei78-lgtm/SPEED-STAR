@@ -1,24 +1,24 @@
 public class CarAirState : CarStateBase
 {
-    private InputReader _inputReader = default;
     private GroundDetector _groundDetecto = default;
     private CarPresenter _carPresenter = default;
-    public CarAirState(CarStateMachine stateMachine, InputReader inputReader, GroundDetector groundDetector, CarPresenter carPresenter) : base(stateMachine)
+    private CarSoundPresenter _carSoundPresenter = default;
+    private JumpRotation _jumpRotation = default;
+    public CarAirState(CarStateMachine stateMachine, GroundDetector groundDetector, CarPresenter carPresenter,CarSoundPresenter carSoundPresenter, JumpRotation jumpRotation) : base(stateMachine)
     {
-        _inputReader = inputReader;
         _groundDetecto = groundDetector;
         _carPresenter = carPresenter;
+        _carSoundPresenter = carSoundPresenter;
+
+        _jumpRotation = jumpRotation;
     }
     public override void Enter()
     {
-
-    }
-    public override void Tick()
-    {
-
+        _jumpRotation.StartSpin(1f);
     }
     public override void FixedTick()
     {
+        _jumpRotation.FixedTick();
         _carPresenter.CurrentCarSpeed();
         bool isGrounded = _groundDetecto.GroundSearch();
 
@@ -29,6 +29,11 @@ public class CarAirState : CarStateBase
     }
     public override void Exit()
     {
+        _jumpRotation.EndSpin(1f);
 
+    }
+    public override void Input()
+    {
+        // Handle input for air state
     }
 }

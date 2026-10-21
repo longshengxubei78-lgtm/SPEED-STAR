@@ -17,7 +17,6 @@ public class GroundDetector
         Vector3 origin = _carTransform.position + _carTransform.up * _startOffset;
 
         bool isGround = Physics.BoxCast(origin, _halfExtents, -_carTransform.up *0.1f, _carTransform.rotation, _maxDistance + _startOffset);
-        Debug.Log("GroundSearch: " + isGround);
         return isGround;
     }
     public float GroundDistance()

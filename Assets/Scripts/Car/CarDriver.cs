@@ -4,34 +4,41 @@ public class CarDriver
     private Transform _myTransForm = default;
     private CarMove _carMove = default;
     private UphillDeceleration _deceleration;
-    private InputReader _inputReader;
+    private InputData _inputData;
 
     private float _rotateSpeed=25f;
     private float _moveForce=20;
 
-    private float _maxSpeed = 0.0f;
-    public CarDriver(CarMove move,Transform myTransform , float maxSpeed, float moveForce, InputReader inputReader) 
+    float driftMultiplier = 1.5f;
+    public CarDriver(CarMove move,Transform myTransform , float moveForce, InputData inputData) 
     {
         _carMove = move;
         _myTransForm = myTransform;
-        _maxSpeed = maxSpeed;
         _moveForce = moveForce;
-        _inputReader = inputReader;
+        _inputData = inputData;
 
         _deceleration = new UphillDeceleration(_myTransForm);
     }
-    public void CarUpdate(float driftMultiplier)
+    public void CarUpdate()
     {
-        _inputReader.Tick();
+        Vector3 linearVelocity = _carMove.GetRigidbody.linearVelocity;
         float rotateSpeed = _rotateSpeed * driftMultiplier;
 
-        float horizontalValue = _inputReader._inputhorizontal;
-        float verticalValue = _inputReader._inputvertical;
+        float horizontalValue = _inputData._inputHorizontal;
+        float verticalValue = _inputData._inputVertical;
 
-        ForcePlayerCar(_myTransForm.forward, _moveForce * verticalValue);
-        if(verticalValue != 0)
+        bool isDrifting = _inputData._isDrifting;
+
+        float driftMultiplierValue = 1f;
+        if (isDrifting)
         {
-            PerspectiveChanges(rotateSpeed, horizontalValue);
+            driftMultiplierValue = Drifting(horizontalValue);
+            _carMove.Drift();
+        }
+        ForcePlayerCar(_myTransForm.forward, _moveForce * verticalValue);
+        if(verticalValue != 0 || horizontalValue != 0)
+        {
+            PerspectiveChanges(rotateSpeed, horizontalValue, driftMultiplierValue);
         }
         SpeedLimit();
         _carMove.Tick();
@@ -52,9 +59,15 @@ public class CarDriver
         MoveFoward = MoveFoward.normalized;
         _carMove.MoveForceCar(MoveFoward, force);
     }
-    private void PerspectiveChanges(float rotateSpeed, float horizontal)
+    private float Drifting(float horizontal)
     {
-        float angle = horizontal * rotateSpeed * Time.fixedDeltaTime;
+        float driftMultiplier = horizontal * 2;
+        driftMultiplier = Mathf.Abs(driftMultiplier);
+        return driftMultiplier;
+    }
+    private void PerspectiveChanges(float rotateSpeed, float horizontal,float driftMultiplier)
+    {
+        float angle = horizontal * rotateSpeed * Time.fixedDeltaTime * driftMultiplier;
 
         Quaternion rotation =
             Quaternion.Euler(0f, angle, 0f);

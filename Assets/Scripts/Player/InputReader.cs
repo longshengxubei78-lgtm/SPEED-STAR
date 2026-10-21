@@ -5,28 +5,27 @@ public class InputReader
 {
     private PlayerInput _inputActions = default;
 
-    private CarController _carController = default;
+    private InputPresenter _inputPresenter = default;
 
-    public float _inputhorizontal { get; private set; }
-    public float _inputvertical { get; private set; }
-
-    public InputReader(CarController carController,PlayerInput playerInput)
+    public InputReader(InputPresenter inputPresenter, PlayerInput playerInput)
     {
-        _carController = carController;
+        _inputPresenter = inputPresenter;
 
         _inputActions = playerInput;
 
-        _inputActions.actions["Drift"].performed += _carController.InputDrift;
-        _inputActions.actions["Drift"].canceled += _carController.InputDrift;
+        _inputActions.actions["Drift"].performed += _inputPresenter.SetDriftValue;
+        _inputActions.actions["Drift"].canceled += _inputPresenter.SetDriftValue;
     }
     public void Dispose()
     {
-        _inputActions.actions["Drift"].performed -= _carController.InputDrift;
-        _inputActions.actions["Drift"].canceled -= _carController.InputDrift;
+        _inputActions.actions["Drift"].performed -= _inputPresenter.SetDriftValue;
+        _inputActions.actions["Drift"].canceled -= _inputPresenter.SetDriftValue;
     }
     public void Tick()
     {
-        _inputhorizontal = _inputActions.actions["Horizontal"].ReadValue<float>();
-        _inputvertical = _inputActions.actions["Vertical"].ReadValue<float>();
+        float inputHorizontal = _inputActions.actions["Horizontal"].ReadValue<float>();
+        float inputVertical = _inputActions.actions["Vertical"].ReadValue<float>();
+
+        _inputPresenter.SetMoveValue(inputHorizontal, inputVertical);
     }
 }

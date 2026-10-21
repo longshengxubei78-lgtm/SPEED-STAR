@@ -6,23 +6,23 @@ public class CarStateMachine
 
     private Dictionary<System.Type, ICarState> states = default;
 
-    public CarStateMachine(CarDriver driver, InputReader inputReader, GroundDetector groundDetector,CarPresenter carPresenter)
+    public CarStateMachine(CarDriver driver, InputData inputData, GroundDetector groundDetector,CarPresenter carPresenter, CarSoundPresenter carSoundPresenter,JumpRotation jumpRotation)
     {
         states = new Dictionary<System.Type, ICarState>
         {
-            { typeof(CarIdleState), new CarIdleState(this,inputReader,carPresenter) },
-            { typeof(CarMoveState), new CarMoveState(this, driver, inputReader, groundDetector,carPresenter) },
-            { typeof(CarAirState), new CarAirState(this, inputReader, groundDetector,carPresenter) }
+            { typeof(CarIdleState), new CarIdleState(this,inputData,carPresenter,carSoundPresenter) },
+            { typeof(CarMoveState), new CarMoveState(this, driver, groundDetector,carPresenter,carSoundPresenter) },
+            { typeof(CarAirState), new CarAirState(this, groundDetector,carPresenter,carSoundPresenter,jumpRotation) },
         };
         SwitchState(typeof(CarIdleState));
-    }
-    public void Tick()
-    {
-        _currentState.Tick();
     }
     public void FixedTick()
     {
         _currentState.FixedTick();
+    }
+    public void Input()
+    {
+        _currentState.Input();
     }
     public void SwitchState(System.Type newStateType)
     {

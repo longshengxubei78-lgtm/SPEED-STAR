@@ -2,28 +2,25 @@ using UnityEngine;
 public class CarMoveState : CarStateBase
 {
     private CarDriver _driver;
-    private InputReader _inputReader;
     private GroundDetector _groundDetector;
     private CarPresenter _carPresenter;
-    public CarMoveState(CarStateMachine stateMachine, CarDriver driver, InputReader inputReader, GroundDetector groundDetector, CarPresenter carPresenter) : base(stateMachine)
+    private CarSoundPresenter _carSoundPresenter;
+    private string _soundName = "Accel";
+    public CarMoveState(CarStateMachine stateMachine, CarDriver driver, GroundDetector groundDetector, CarPresenter carPresenter, CarSoundPresenter carSoundPresenter) : base(stateMachine)
     {
         _driver = driver;
-        _inputReader = inputReader;
         _groundDetector = groundDetector;
         _carPresenter = carPresenter;
+        _carSoundPresenter = carSoundPresenter;
     }
 
     public override void Enter()
     {
-        Debug.Log("Enter Move State");
-    }
-    public override void Tick()
-    {
+        _carSoundPresenter.PlaySound(_soundName);
     }
     public override void FixedTick()
     {
         _carPresenter.CurrentCarSpeed();
-        _inputReader.Tick();
 
         float currentSpeed = _driver.GetCurrentSpeed();
 
@@ -33,15 +30,19 @@ public class CarMoveState : CarStateBase
         {
             _stateMachine.SwitchState(typeof(CarAirState));
         }
-        if (currentSpeed==0)
+        if (Mathf.Approximately(currentSpeed, 0))
         {
             _stateMachine.SwitchState(typeof(CarIdleState));
 
         }
-        _driver.CarUpdate(1.5f);
+        _driver.CarUpdate();
     }
     public override void Exit()
     {
-        Debug.Log("Exit Move State");
+        _carSoundPresenter.StopSound(_soundName);
+    }
+    public override void Input()
+    {
+        // Handle input for moving
     }
 }

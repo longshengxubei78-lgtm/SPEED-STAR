@@ -6,48 +6,56 @@ public class CarController : MonoBehaviour
     [SerializeField] private float _moveForce = 0.0f;
     [SerializeField] private Rigidbody _myRigibody = default;
 
-    private CarDriver _driver = default;
-    private CarMove _carMove = default;
-    private GroundDetector _groundDetector = default;
     private InputReader _inputReader = default;
     private CarStateMachine _carStateMachine = default;
-    private CarPresenter _presenter = default;
 
+    [SerializeField] private RaceFlowManager _raceFlowManager;
     [SerializeField] private PlayerInput playerInput = default;
     [SerializeField]private SpeedMeter _speedMeter = default;
+    [SerializeField] private SoundBank _soundBank = default;
+    [SerializeField] private LayerMask _roadLayer = default;
+    private bool _canControl;
+
+    private void ApplyPhase(RacePhase phase , RacePhase nextPhase)
+    {
+        _canControl = nextPhase == RacePhase.Racing;
+    }
     private void Awake()
     {
-        _carMove = new CarMove(_myRigibody, _maxSpeed);
-        _inputReader = new InputReader(this,playerInput);
-        _driver = new CarDriver(_carMove, transform, _maxSpeed, _moveForce, _inputReader);
-        _groundDetector = new GroundDetector(transform);
-        _presenter = new CarPresenter(_speedMeter, _driver);
-        _carStateMachine = new CarStateMachine(_driver, _inputReader, _groundDetector ,_presenter);
+        string roadLayerName = _roadLayer.ToString();
+        int roadMask = LayerMask.GetMask(roadLayerName);
+        JumpRotation jumpRotation = new JumpRotation(_myRigibody ,roadMask);
+        InputData inputData = new InputData();
+        InputPresenter inputPresenter = new InputPresenter(inputData);
+        CarSoundPresenter carSoundPresenter = new CarSoundPresenter(inputData, _soundBank);
+        CarMove carMove = new CarMove(_myRigibody, _maxSpeed, LayerMask.GetMask("Road"));
+        _inputReader = new InputReader(inputPresenter, playerInput);
+        CarDriver driver = new CarDriver(carMove, transform, _moveForce, inputData);
+        GroundDetector groundDetector = new GroundDetector(transform);
+        CarPresenter presenter = new CarPresenter(_speedMeter, driver);
+        _carStateMachine = new CarStateMachine(driver, inputData, groundDetector ,presenter, carSoundPresenter,jumpRotation);
+    }
+    private void Start()
+    {
+        _raceFlowManager._OnPhaseChaged.Subscribe(ApplyPhase);
     }
     private void OnEnable()
     {
     }
     private void Update()
     {
-        _carStateMachine?.Tick();
+        if (!_canControl)
+            return;
+        _inputReader?.Tick();
     }
     private void FixedUpdate()
     {
+        if (!_canControl)
+            return;
         _carStateMachine.FixedTick();
     }
     private void OnDisable()
     {
         _inputReader?.Dispose();
-    }
-    public void InputDrift(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-
-        }
-        else if (context.canceled) 
-        {
-
-        }
     }
 }

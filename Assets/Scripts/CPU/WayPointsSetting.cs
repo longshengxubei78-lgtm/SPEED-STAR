@@ -2,10 +2,10 @@
 
 public class WayPointsSetting : MonoBehaviour
 {
-    [SerializeField] private GameObject _myWayPoint;
+    [SerializeField] private GameObject _nextPoint;
 
     public GameObject OnGetWayPoint()
     {
-        return _myWayPoint;
+        return _nextPoint;
     }
 }

@@ -1,25 +1,24 @@
 using UnityEngine;
 public class CarIdleState : CarStateBase
 {
-    private InputReader _inputReader;
+    private InputData _inputData;
     private CarPresenter _carPresenter;
-    public CarIdleState(CarStateMachine stateMachine, InputReader inputReader, CarPresenter carPresenter) : base(stateMachine)
+    private CarSoundPresenter _carSoundPresenter;
+    private string _soundName = "Idle";
+    public CarIdleState(CarStateMachine stateMachine, InputData inputData, CarPresenter carPresenter, CarSoundPresenter carSoundPresenter) : base(stateMachine)
     {
-        _inputReader = inputReader;
+        _inputData = inputData;
         _carPresenter = carPresenter;
+        _carSoundPresenter = carSoundPresenter;
     }
     public override void Enter()
     {
-        Debug.Log("Entering Idle State");
-    }
-    public override void Tick()
-    {
+        _carSoundPresenter.PlaySound(_soundName);
     }
     public override void FixedTick()
     {
         _carPresenter.CurrentCarSpeed();
-        _inputReader.Tick();
-        float getInputVertical = _inputReader._inputvertical;
+        float getInputVertical = _inputData._inputVertical;
         
         if (getInputVertical != 0)
         {
@@ -29,6 +28,11 @@ public class CarIdleState : CarStateBase
     }
     public override void Exit()
     {
-        Debug.Log("Exiting Idle State");
+        _carSoundPresenter.StopSound(_soundName);
+
+    }
+    public override void Input()
+    {
+        // Handle input for idle state
     }
 }

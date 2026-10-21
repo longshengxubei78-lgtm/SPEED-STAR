@@ -1,8 +1,11 @@
 public class CPUMoveState : CPUStateBase
 {
-    public CPUMoveState(CPUStateMachine stateMachine) : base(stateMachine)
+    private CarDriver _carDriver;
+    private GroundDetector _groundDetector;
+    public CPUMoveState(CPUStateMachine stateMachine, CarDriver carDriver,GroundDetector groundDetector) : base(stateMachine)
     {
-
+        _carDriver = carDriver;
+        _groundDetector = groundDetector;
     }
     public override void Enter()
     {
@@ -16,5 +19,23 @@ public class CPUMoveState : CPUStateBase
     }
     public override void FixedTick()
     {
+        float currentSpeed = _carDriver.GetCurrentSpeed();
+
+        bool isGrounded = _groundDetector.GroundSearch();
+
+        if (!isGrounded)
+        {
+            _stateMachine.SwitchState(typeof(CPUAirState));
+        }
+        if (currentSpeed == 0)
+        {
+            _stateMachine.SwitchState(typeof(CPUIdleState));
+
+        }
+        _carDriver.CarUpdate();
+    }
+    public override void Input()
+    {
+        // Handle input for moving
     }
 }

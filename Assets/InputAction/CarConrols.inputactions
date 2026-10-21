@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "CarConrols",
     "maps": [
         {
@@ -68,6 +69,17 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "",
+                    "id": "064c84a4-cb69-4acb-9ff6-0d00493ca4b8",
+                    "path": "<Gamepad>/leftStick/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Horizontal",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
                     "name": "1D Axis",
                     "id": "c7da8fb0-f8d9-493d-8dc1-73c5403d8112",
                     "path": "1DAxis",
@@ -102,8 +114,41 @@
                 },
                 {
                     "name": "",
+                    "id": "8dcd33e7-06b7-4836-8f26-b0823c66393a",
+                    "path": "<Gamepad>/leftStick/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Vertical",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "2cf97893-b63b-45d1-b0ba-097d5739a89f",
                     "path": "<Keyboard>/shift",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e0e95b3c-a48f-4226-9c36-362390c0affb",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3b1f8ee6-2608-4091-ae00-c20cc2c5c3b3",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",

@@ -10,7 +10,7 @@ public abstract class CarStateBase : ICarState
 
 
     public abstract void Enter();
-    public abstract void Tick();
     public abstract void Exit();
     public abstract void FixedTick();
+    public abstract void Input();
 }
