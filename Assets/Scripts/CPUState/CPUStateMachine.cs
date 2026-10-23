@@ -25,16 +25,12 @@ public class CPUStateMachine : MonoBehaviour
     }
     private void Awake()
     {
-        string roadLayerName = _roadLayer.ToString();
-        string wallLayerName = _wallLayer.ToString();
-        int roadMask = LayerMask.GetMask(roadLayerName);
-        int wallMask = LayerMask.GetMask(wallLayerName);
         InputData inputData = new InputData();
         InputPresenter inputPresenter = new InputPresenter(inputData);
-        CarMove carMove = new CarMove(_myRigibody, _maxSpeed, roadMask);
+        CarMove carMove = new CarMove(_myRigibody, _maxSpeed, _roadLayer);
         CarDriver _driver = new CarDriver(carMove, transform, _moveForce, inputData);
         GroundDetector _groundDetector = new GroundDetector(transform);
-        _searchTarget = new CPUMoveTargetSearch(transform, _firstTarget ,inputPresenter, _myRigibody, _playerTransform, wallMask);
+        _searchTarget = new CPUMoveTargetSearch(transform, _firstTarget ,inputPresenter, _myRigibody, _playerTransform, _wallLayer);
 
         states = new Dictionary<System.Type, ICarState>
         {

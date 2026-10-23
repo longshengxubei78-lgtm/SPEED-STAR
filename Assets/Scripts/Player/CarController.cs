@@ -22,13 +22,11 @@ public class CarController : MonoBehaviour
     }
     private void Awake()
     {
-        string roadLayerName = _roadLayer.ToString();
-        int roadMask = LayerMask.GetMask(roadLayerName);
-        JumpRotation jumpRotation = new JumpRotation(_myRigibody ,roadMask);
+        JumpRotation jumpRotation = new JumpRotation(_myRigibody ,_roadLayer);
         InputData inputData = new InputData();
         InputPresenter inputPresenter = new InputPresenter(inputData);
         CarSoundPresenter carSoundPresenter = new CarSoundPresenter(inputData, _soundBank);
-        CarMove carMove = new CarMove(_myRigibody, _maxSpeed, LayerMask.GetMask("Road"));
+        CarMove carMove = new CarMove(_myRigibody, _maxSpeed, _roadLayer);
         _inputReader = new InputReader(inputPresenter, playerInput);
         CarDriver driver = new CarDriver(carMove, transform, _moveForce, inputData);
         GroundDetector groundDetector = new GroundDetector(transform);

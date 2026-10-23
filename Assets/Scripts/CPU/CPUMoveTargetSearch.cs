@@ -87,10 +87,9 @@ private const float _maxSidewaysSpeed = 120f; // 120 → 12
     {
         float horizontal = GetHorizontal();
         float vertical = GetVertical() * GetCornerBrake();
-        vertical = 1f;
         bool drift = ShouldDrift();
-        _inputPresenter.SetMoveValue(horizontal, vertical);
-        _inputPresenter.SetDriftValue(drift);
+        _inputPresenter.SetMoveValue(horizontal, 1f);
+        _inputPresenter.SetDriftValue(false);
     }
 
     private float GetVertical()

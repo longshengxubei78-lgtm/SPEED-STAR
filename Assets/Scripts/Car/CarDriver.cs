@@ -27,6 +27,7 @@ public class CarDriver
         float horizontalValue = _inputData._inputHorizontal;
         float verticalValue = _inputData._inputVertical;
 
+        Debug.Log($"Horizontal: {horizontalValue}, Vertical: {verticalValue}");
         bool isDrifting = _inputData._isDrifting;
 
         float driftMultiplierValue = 1f;
