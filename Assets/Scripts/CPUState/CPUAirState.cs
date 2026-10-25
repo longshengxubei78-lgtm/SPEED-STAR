@@ -18,14 +18,14 @@ public class CPUAirState : CPUStateBase
     }
     public override void FixedTick()
     {
-        GroundDetector _groundDetector = new GroundDetector(_stateMachine.transform);
+        //GroundDetector _groundDetector = new GroundDetector(_stateMachine.transform);
         
-        bool isGrounded = _groundDetector.GroundSearch();
+        ////bool isGrounded = _groundDetector.GroundSearch();
 
-        if (isGrounded)
-        {
-            _stateMachine.SwitchState(typeof(CPUMoveState));
-        }
+        //if (isGrounded)
+        //{
+        //    _stateMachine.SwitchState(typeof(CPUMoveState));
+        //}
     }
     public override void Input()
     {

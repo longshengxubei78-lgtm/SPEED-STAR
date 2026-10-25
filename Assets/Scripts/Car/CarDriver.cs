@@ -1,83 +1,179 @@
 using UnityEngine;
+
 public class CarDriver
 {
-    private Transform _myTransForm = default;
-    private CarMove _carMove = default;
-    private UphillDeceleration _deceleration;
-    private InputData _inputData;
+    // ===== 参照 =====
+    private readonly Rigidbody _rigidbody;
+    private readonly Transform _transform;
+    private readonly UphillDeceleration _uphillDeceleration;
+    private readonly GroundDetector _groundDetector = default;
+    private readonly InputData _inputData;
+    private readonly LayerMask _groundMask;
 
-    private float _rotateSpeed=25f;
-    private float _moveForce=20;
+    // ===== 走行パラメータ =====
+    private readonly float _moveForce;
+    private readonly float _maxSpeed;
+    private readonly float _rotateSpeed = 25f * 1.5f; // 元コードでは常に1.5倍が掛かっていた
+    private readonly float _sideDecelerationRate = 0.95f;
+    private readonly float _driftDecelerationRate = 0.998f;
 
-    float driftMultiplier = 1.5f;
-    public CarDriver(CarMove move,Transform myTransform , float moveForce, InputData inputData) 
+    // ===== 姿勢安定 =====
+    private readonly float _rollPitchDamping = 5.0f;
+    private readonly float _uprightStrength = 10.0f;
+
+    // ===== 状態 =====
+    private bool _isGrounded;
+    private Vector3 _groundNormal = Vector3.up;
+
+    public bool IsGrounded => _isGrounded;
+    public Rigidbody GetRigidbody => _rigidbody; // 外部で使っていなければ削除してOK
+
+    public CarDriver(Rigidbody rb, Transform myTransform, float moveForce,
+                     float maxSpeed, InputData inputData, GroundDetector groundDetector)
     {
-        _carMove = move;
-        _myTransForm = myTransform;
+        _rigidbody = rb;
+        _transform = myTransform;
         _moveForce = moveForce;
+        _maxSpeed = maxSpeed;
         _inputData = inputData;
 
-        _deceleration = new UphillDeceleration(_myTransForm);
+        _groundDetector = groundDetector;
+        _uphillDeceleration = new UphillDeceleration(_transform);
     }
-    public void CarUpdate()
+
+    public void CarUpdate(float horizontal, float vertical)
     {
-        Vector3 linearVelocity = _carMove.GetRigidbody.linearVelocity;
-        float rotateSpeed = _rotateSpeed * driftMultiplier;
 
-        float horizontalValue = _inputData._inputHorizontal;
-        float verticalValue = _inputData._inputVertical;
+        CheckGround();
 
-        Debug.Log($"Horizontal: {horizontalValue}, Vertical: {verticalValue}");
-        bool isDrifting = _inputData._isDrifting;
+        float turnMultiplier = 1f;
 
-        float driftMultiplierValue = 1f;
-        if (isDrifting)
+        Accelerate(vertical);
+
+        if (vertical != 0 || horizontal != 0)
         {
-            driftMultiplierValue = Drifting(horizontalValue);
-            _carMove.Drift();
+            Turn(horizontal, turnMultiplier);
         }
-        ForcePlayerCar(_myTransForm.forward, _moveForce * verticalValue);
-        if(verticalValue != 0 || horizontalValue != 0)
-        {
-            PerspectiveChanges(rotateSpeed, horizontalValue, driftMultiplierValue);
-        }
-        SpeedLimit();
-        _carMove.Tick();
-    }
-    public void SpeedLimit()
-    {
-        Rigidbody carRidibody = _carMove.GetRigidbody;
 
-        _carMove.MovementSpeedLimit(carRidibody.linearVelocity);
+        LimitHorizontalSpeed();
+        StabilizeRotation();
+        ReduceSidewaysVelocity();
     }
-    private void ForcePlayerCar(Vector3 CarFoward, float MoveForce)
+
+    // 通常走行
+    public void DriveUpdate(float horizontal, float vertical)
     {
-        float decelertion = _deceleration.CalculateDecelerationRate();
-        float force = decelertion * MoveForce;
-
-        Vector3 MoveFoward = CarFoward;
-
-        MoveFoward = MoveFoward.normalized;
-        _carMove.MoveForceCar(MoveFoward, force);
+        CheckGround();
+        Accelerate(vertical);
+        if (vertical != 0 || horizontal != 0)
+            Turn(horizontal, 1f);
+        ApplyCommonPhysics();
     }
-    private float Drifting(float horizontal)
-    {
-        float driftMultiplier = horizontal * 2;
-        driftMultiplier = Mathf.Abs(driftMultiplier);
-        return driftMultiplier;
-    }
-    private void PerspectiveChanges(float rotateSpeed, float horizontal,float driftMultiplier)
-    {
-        float angle = horizontal * rotateSpeed * Time.fixedDeltaTime * driftMultiplier;
 
-        Quaternion rotation =
-            Quaternion.Euler(0f, angle, 0f);
-        _carMove.TurnCar(rotation);
+    // ドリフト走行
+    public void DriftUpdate(float horizontal, float vertical)
+    {
+        CheckGround();
+        ApplyDriftDeceleration();
+        Accelerate(vertical);
+        if (vertical != 0 || horizontal != 0)
+            Turn(horizontal, Mathf.Abs(horizontal) * 2f);
+        ApplyCommonPhysics();
+
+    }
+
+    private void ApplyCommonPhysics()
+    {
+        LimitHorizontalSpeed();
+        StabilizeRotation();
+        ReduceSidewaysVelocity();
     }
     public float GetCurrentSpeed()
     {
-        Rigidbody carRidibody = _carMove.GetRigidbody;
-        float currentSpeed = carRidibody.linearVelocity.magnitude;
-        return currentSpeed;
+        return _rigidbody.linearVelocity.magnitude;
+    }
+
+    // ===== 接地判定 =====
+    private void CheckGround()
+    {
+        Vector3 targetNormal = _groundDetector.CheckGround(_groundNormal);
+
+        if(targetNormal == Vector3.up)
+        {
+            _isGrounded = false;
+        }
+        else
+        {
+            _isGrounded = true;
+        }
+        _groundNormal = Vector3.Slerp(_groundNormal, targetNormal, 0.2f);
+    }
+
+    // ===== 加速 =====
+    private void Accelerate(float input)
+    {
+        if (!_isGrounded) return; // 空中では加速しない
+
+        float force = _uphillDeceleration.CalculateDecelerationRate() * _moveForce * input;
+
+        // 速度が上がるほど加速を弱める
+        if (_rigidbody.linearVelocity.magnitude / _maxSpeed > 0.5f)
+        {
+            force *= 0.7f;
+        }
+
+        Vector3 direction = Vector3.ProjectOnPlane(_transform.forward, _groundNormal).normalized;
+        _rigidbody.AddForce(direction * force);
+    }
+
+    // ===== 旋回 =====
+    private void Turn(float horizontal, float multiplier)
+    {
+        if (!_isGrounded) return; // 空中では旋回しない
+
+        float angle = horizontal * _rotateSpeed * Time.fixedDeltaTime * multiplier;
+        _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
+    }
+
+    // ===== ドリフト減速(水平のみ) =====
+    private void ApplyDriftDeceleration()
+    {
+        Vector3 v = _rigidbody.linearVelocity;
+        Vector3 horizontal = new Vector3(v.x, 0f, v.z) * _driftDecelerationRate;
+        _rigidbody.linearVelocity = new Vector3(horizontal.x, v.y, horizontal.z);
+    }
+
+    // ===== 速度制限(水平のみ) =====
+    private void LimitHorizontalSpeed()
+    {
+        Vector3 velocity = _rigidbody.linearVelocity;
+        Vector3 horizontal = Vector3.ClampMagnitude(new Vector3(velocity.x, 0f, velocity.z), _maxSpeed);
+        _rigidbody.linearVelocity = new Vector3(horizontal.x, velocity.y, horizontal.z);
+    }
+
+    // ===== 横滑り抑制 =====
+    private void ReduceSidewaysVelocity()
+    {
+        if (!_isGrounded) return;
+
+        Vector3 v = _rigidbody.linearVelocity;
+        Vector3 right = Vector3.ProjectOnPlane(_transform.right, _groundNormal).normalized;
+        float sidewaysSpeed = Vector3.Dot(v, right);
+
+        float keep = Mathf.Pow(_sideDecelerationRate, Time.fixedDeltaTime * 60f);
+        _rigidbody.linearVelocity = v - right * sidewaysSpeed * (1f - keep);
+    }
+
+    /// ===== 傾きの減衰と復元 =====
+    private void StabilizeRotation()
+    {
+        Vector3 localAV = _transform.InverseTransformDirection(_rigidbody.angularVelocity);
+        float k = Mathf.Exp(-_rollPitchDamping * Time.fixedDeltaTime);
+        localAV.x *= k;
+        localAV.z *= k;
+        _rigidbody.angularVelocity = _transform.TransformDirection(localAV);
+
+        Vector3 axis = Vector3.Cross(_transform.up, _groundNormal);
+        _rigidbody.AddTorque(axis * _uprightStrength, ForceMode.Acceleration);
     }
 }

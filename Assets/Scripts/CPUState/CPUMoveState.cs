@@ -32,7 +32,7 @@ public class CPUMoveState : CPUStateBase
             _stateMachine.SwitchState(typeof(CPUIdleState));
 
         }
-        _carDriver.CarUpdate();
+        //_carDriver.CarUpdate();
     }
     public override void Input()
     {

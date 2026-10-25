@@ -31,7 +31,7 @@ public class CarDriftState : CarStateBase
             _stateMachine.SwitchState(typeof(CarIdleState));
 
         }
-        _driver.CarUpdate();
+        //_driver.CarUpdate();
     }
     public override void Exit()
     {
