@@ -44,7 +44,7 @@ public class CarController : MonoBehaviour
         CarMove carMove = new CarMove(_myRigibody, _maxSpeed, _roadLayer);
         _inputReader = new InputReader(inputPresenter, playerInput);
         _groundDetector = new GroundDetector(transform , _roadLayer);
-        _driver = new CarDriver(_myRigibody, transform, _moveForce, _maxSpeed, _inputData,_groundDetector);
+        _driver = new CarDriver(_myRigibody, transform, _moveForce, _maxSpeed,_groundDetector);
         _carPresenter = new CarPresenter(_speedMeter, _driver);
 
         Enter();

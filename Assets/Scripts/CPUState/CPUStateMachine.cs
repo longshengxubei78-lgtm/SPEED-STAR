@@ -25,20 +25,20 @@ public class CPUStateMachine : MonoBehaviour
     }
     private void Awake()
     {
-        InputData inputData = new InputData();
-        InputPresenter inputPresenter = new InputPresenter(inputData);
-        CarMove carMove = new CarMove(_myRigibody, _maxSpeed, _roadLayer);
-        GroundDetector _groundDetector = new GroundDetector(transform,_roadLayer);
-        CarDriver _driver = new CarDriver(_myRigibody, transform,  _maxSpeed, _moveForce, inputData,_groundDetector);
-        _searchTarget = new CPUMoveTargetSearch(transform, _firstTarget ,inputPresenter, _myRigibody, _playerTransform, _wallLayer);
+        //InputData inputData = new InputData();
+        //InputPresenter inputPresenter = new InputPresenter(inputData);
+        //CarMove carMove = new CarMove(_myRigibody, _maxSpeed, _roadLayer);
+        //GroundDetector _groundDetector = new GroundDetector(transform,_roadLayer);
+        //CarDriver _driver = new CarDriver(_myRigibody, transform,  _maxSpeed, _moveForce, inputData,_groundDetector);
+        //_searchTarget = new CPUMoveTargetSearch(transform, _firstTarget ,inputPresenter, _myRigibody, _playerTransform, _wallLayer);
 
-        states = new Dictionary<System.Type, ICarState>
-        {
-            { typeof(CPUIdleState), new CPUIdleState(this,inputData) },
-            { typeof(CPUMoveState), new CPUMoveState(this, _driver, _groundDetector) },
-            { typeof(CPUAirState), new CPUAirState(this) }
-        };
-        SwitchState(typeof(CPUIdleState));
+        //states = new Dictionary<System.Type, ICarState>
+        //{
+        //    { typeof(CPUIdleState), new CPUIdleState(this,inputData) },
+        //    { typeof(CPUMoveState), new CPUMoveState(this, _driver, _groundDetector) },
+        //    { typeof(CPUAirState), new CPUAirState(this) }
+        //};
+        //SwitchState(typeof(CPUIdleState));
     }
     private void Start()
     {

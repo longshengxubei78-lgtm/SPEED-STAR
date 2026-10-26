@@ -7,7 +7,6 @@ public class CarDriver
     private readonly Transform _transform;
     private readonly UphillDeceleration _uphillDeceleration;
     private readonly GroundDetector _groundDetector = default;
-    private readonly InputData _inputData;
     private readonly LayerMask _groundMask;
 
     // ===== 走行パラメータ =====
@@ -29,13 +28,12 @@ public class CarDriver
     public Rigidbody GetRigidbody => _rigidbody; // 外部で使っていなければ削除してOK
 
     public CarDriver(Rigidbody rb, Transform myTransform, float moveForce,
-                     float maxSpeed, InputData inputData, GroundDetector groundDetector)
+                     float maxSpeed, GroundDetector groundDetector)
     {
         _rigidbody = rb;
         _transform = myTransform;
         _moveForce = moveForce;
         _maxSpeed = maxSpeed;
-        _inputData = inputData;
 
         _groundDetector = groundDetector;
         _uphillDeceleration = new UphillDeceleration(_transform);

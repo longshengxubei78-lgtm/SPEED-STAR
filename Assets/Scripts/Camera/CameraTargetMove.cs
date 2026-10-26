@@ -9,14 +9,21 @@ public class CameraTargetMove : MonoBehaviour
         switch (_carController._currentState)
         {
             case CarState.Idle:
-                RotateTo(_playerRigidBody.transform.rotation);
+                RotateTo(transform.rotation);
                 break;
             case CarState.Move:
                 MoveRotation();
                 break;
+            case CarState.Drift:
+                MoveRotation();
+
+                break;
         }
     }
+    private void DriftCamera()
+    {
 
+    }
     private void MoveRotation()
     {
         Vector3 velocity = _playerRigidBody.linearVelocity;
