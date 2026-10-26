@@ -3,7 +3,8 @@ public class CameraTargetMove : MonoBehaviour
 {
     [SerializeField] private Rigidbody _playerRigidBody = default;
     [SerializeField] private CarController _carController = default;
-    [SerializeField] private float _rotateSpeed = 10.0f;
+    [SerializeField] private float _driftCameraSideMoveSpeed = 10.0f;
+    [SerializeField] private float _cameraSideLength = 5.0f;
     private void LateUpdate()
     {
         switch (_carController._currentState)
@@ -15,14 +16,18 @@ public class CameraTargetMove : MonoBehaviour
                 MoveRotation();
                 break;
             case CarState.Drift:
-                MoveRotation();
+                DriftCamera(_carController.InputHorizontal);
 
                 break;
         }
     }
-    private void DriftCamera()
+    private void DriftCamera(float driftAmount)
     {
+        driftAmount *= _cameraSideLength;
 
+        Vector3 targetPosition = _carController.transform.position + transform.right * driftAmount;
+
+        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * _driftCameraSideMoveSpeed);
     }
     private void MoveRotation()
     {
@@ -37,6 +42,6 @@ public class CameraTargetMove : MonoBehaviour
     private void RotateTo(Quaternion target)
     {
         transform.rotation = Quaternion.Slerp(
-            transform.rotation, target, _rotateSpeed * Time.deltaTime);
+            transform.rotation, target, _driftCameraSideMoveSpeed * Time.deltaTime);
     }
 }

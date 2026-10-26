@@ -35,6 +35,7 @@ public class CarController : MonoBehaviour
     private const string IdleSoundName = "Idle";
     private const string MoveSoundName = "Accel";
 
+    public float InputHorizontal => _inputData._inputHorizontal;
     private void Awake()
     {
         _jumpRotation = new JumpRotation(_myRigibody, _roadLayer);
