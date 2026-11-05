@@ -1,27 +1,77 @@
 using UnityEngine;
+using XqLua;
 public class CameraTargetMove : MonoBehaviour
 {
     [SerializeField] private Rigidbody _playerRigidBody = default;
     [SerializeField] private CarController _carController = default;
     [SerializeField] private float _driftCameraSideMoveSpeed = 10.0f;
     [SerializeField] private float _cameraSideLength = 5.0f;
+
+
+    private  Vector3 _initialPosition;
+    private IDisposableSubscription _onstateChange = default;
+    private void OnEnable()
+    {
+        _onstateChange = _carController._onStateChanged.Subscribe(StateChange);
+        _initialPosition = transform.position;
+    }
+    private void OnDisable()
+    {
+        _onstateChange.Dispose();
+    }
+    private void StateChange(CarState oldState, CarState newState)
+    {
+        Exit(oldState);
+        Enter(newState);
+    }
+    private void Enter(CarState state)
+    {
+        switch (state)
+        {
+            case CarState.Idle:
+                CameraPositionReset();
+                break;
+            case CarState.Move:
+                CameraPositionReset();
+                break;
+            case CarState.Drift:
+                break;
+        }
+    }
+    private void Exit(CarState state)
+    {
+        switch (state)
+        {
+            case CarState.Idle:
+                break;
+            case CarState.Move:
+                break;
+            case CarState.Drift:
+                break;
+        }
+    }
     private void LateUpdate()
     {
         switch (_carController._currentState)
         {
             case CarState.Idle:
-                RotateTo(transform.rotation);
+                RotateTo(_carController.transform.rotation);
                 break;
             case CarState.Move:
+                MoveCamera(_carController.InputHorizontal * 0.5f);
                 MoveRotation();
                 break;
             case CarState.Drift:
-                DriftCamera(_carController.InputHorizontal);
-
+                MoveCamera(_carController.InputHorizontal);
+                MoveRotation();
                 break;
         }
     }
-    private void DriftCamera(float driftAmount)
+    private void CameraPositionReset()
+    {
+        transform.position = _initialPosition;
+    }
+    private void MoveCamera(float driftAmount)
     {
         driftAmount *= _cameraSideLength;
 

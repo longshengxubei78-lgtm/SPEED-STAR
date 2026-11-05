@@ -20,12 +20,10 @@ public class InputPresenter
         if (context.performed)
         {
             _inputData.SetDrift(true);
-            Debug.Log("Drift started");
         }
         else if (context.canceled)
         {
             _inputData.SetDrift(false);
-            Debug.Log("Drift canceled");
         }
     }
 }

@@ -1241,7 +1241,6 @@ GameObject:
   - component: {fileID: 3576603355995302034}
   - component: {fileID: 2220019577907561701}
   - component: {fileID: 8665405490455690545}
-  - component: {fileID: 4268825102353474238}
   - component: {fileID: 5736454674762857173}
   - component: {fileID: 7167873012954243332}
   - component: {fileID: 3237401256895037648}
@@ -1315,29 +1314,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1.2844582
   m_Center: {x: 0, y: 1.22, z: 0.95}
---- !u!136 &4268825102353474238
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 799239341344353166}
-  m_Material: {fileID: 13400000, guid: 28121ba66041c5c4d9bd424288291e8e, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.89523137
-  m_Height: 5.097488
-  m_Direction: 2
-  m_Center: {x: -0.033811565, y: 0.9232675, z: -0.12862039}
 --- !u!54 &5736454674762857173
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1377,6 +1353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d90f3b9c19e9db44b097009ed4a8602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _currentState: 0
   _maxSpeed: 100
   _moveForce: 2500
   _myRigibody: {fileID: 5736454674762857173}
@@ -1384,6 +1361,9 @@ MonoBehaviour:
   playerInput: {fileID: 3237401256895037648}
   _speedMeter: {fileID: 0}
   _soundBank: {fileID: 0}
+  _roadLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &3237401256895037648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6243,7 +6223,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraTargetMove
   _playerRigidBody: {fileID: 5736454674762857173}
-  _cameraDistance: 3
+  _carController: {fileID: 0}
+  _driftCameraSideMoveSpeed: 10
+  _cameraSideLength: 5
 --- !u!1 &4088216649041892370
 GameObject:
   m_ObjectHideFlags: 0
@@ -9173,7 +9155,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraTargetMove
   _playerRigidBody: {fileID: 5736454674762857173}
-  _cameraDistance: 3
+  _carController: {fileID: 0}
+  _driftCameraSideMoveSpeed: 10
+  _cameraSideLength: 5
 --- !u!1 &6133110817206946735
 GameObject:
   m_ObjectHideFlags: 0

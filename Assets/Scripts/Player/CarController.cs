@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using XqLua;
 
 public enum CarState {
     Idle, 
@@ -35,9 +36,19 @@ public class CarController : MonoBehaviour
     private const string IdleSoundName = "Idle";
     private const string MoveSoundName = "Accel";
 
+    private const float StopSpeedThreshold = 0.1f;
+    private const float InputThreshold = 0.01f;
+
     public float InputHorizontal => _inputData._inputHorizontal;
+
+    private Publisher<CarState, CarState> _onStateChange
+        = new Publisher<CarState, CarState>();
+
+    public IPublisher<CarState, CarState> _onStateChanged
+        => _onStateChange;
     private void Awake()
     {
+        _onStateChange = new Publisher<CarState, CarState>();
         _jumpRotation = new JumpRotation(_myRigibody, _roadLayer);
         _inputData = new InputData();
         InputPresenter inputPresenter = new InputPresenter(_inputData);
@@ -59,6 +70,8 @@ public class CarController : MonoBehaviour
     }
     private void SwitchState(CarState newState)
     {
+        _onStateChange.Invoke(_currentState, newState);
+
         Exit();
         _currentState = newState;
         Enter();
@@ -79,6 +92,7 @@ public class CarController : MonoBehaviour
     }
     public void FixedTick()
     {
+        print(_currentState);
         switch (_currentState)
         {
             case CarState.Idle:
@@ -103,10 +117,11 @@ public class CarController : MonoBehaviour
                 }
                 _driver.DriveUpdate(_inputData._inputHorizontal,_inputData._inputVertical);
 
-                if (_inputData._inputVertical == 0 &&
-                    Mathf.Approximately(_driver.GetCurrentSpeed(), 0))
+                if (Mathf.Abs(_inputData._inputVertical) < InputThreshold &&
+                    Mathf.Abs(_driver.GetCurrentSpeed()) < StopSpeedThreshold)
                 {
                     SwitchState(CarState.Idle);
+                    return;
                 }
                 break;
 
@@ -117,7 +132,8 @@ public class CarController : MonoBehaviour
                     SwitchState(CarState.Air);
                     return;
                 }
-                if (Mathf.Approximately(_driver.GetCurrentSpeed(), 0))
+                if (Mathf.Abs(_inputData._inputVertical) < InputThreshold &&
+                    Mathf.Abs(_driver.GetCurrentSpeed()) < StopSpeedThreshold)
                 {
                     SwitchState(CarState.Idle);
                     return;

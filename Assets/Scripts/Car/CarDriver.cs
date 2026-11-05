@@ -25,7 +25,7 @@ public class CarDriver
     private Vector3 _groundNormal = Vector3.up;
 
     public bool IsGrounded => _isGrounded;
-    public Rigidbody GetRigidbody => _rigidbody; // 外部で使っていなければ削除してOK
+    public Rigidbody GetRigidbody => _rigidbody;
 
     public CarDriver(Rigidbody rb, Transform myTransform, float moveForce,
                      float maxSpeed, GroundDetector groundDetector)
