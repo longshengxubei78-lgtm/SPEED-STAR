@@ -16,8 +16,8 @@ public class SpeedShakeCamera : MonoBehaviour
 
         if (currentSpeed > _speedThreshold)
         {
-            float shakevalue = Mathf.InverseLerp(_speedThreshold, _maxSpeedForFullShake, currentSpeed);
-            float value = Mathf.Lerp(_minCameraShakeValue, _maxCameraShakeValue, shakevalue);
+            float shakeValue = Mathf.InverseLerp(_speedThreshold, _maxSpeedForFullShake, currentSpeed);
+            float value = Mathf.Lerp(_minCameraShakeValue, _maxCameraShakeValue, shakeValue);
             _cameraShake.SetShake(value, value);
         }
         else

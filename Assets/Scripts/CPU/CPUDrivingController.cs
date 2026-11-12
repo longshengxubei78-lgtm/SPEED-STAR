@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CPUMoveTargetSearch
+public class CPUDrivingController
 {
     private float _detectionDistance = 100f;
     private Transform _cpuTransform = default;
@@ -44,7 +44,7 @@ private const float _maxSidewaysSpeed = 120f; // 120 → 12
     private RaycastHit _leftDiagWall = default;
     private bool _rightDiagHit = default;
     private bool _leftDiagHit = default;
-    public CPUMoveTargetSearch(Transform transform, GameObject fastTarget,
+    public CPUDrivingController(Transform transform, GameObject fastTarget,
         Rigidbody rigidbody, Transform playerTransform, int wallMask)
     {
         _cpuTransform = transform;
@@ -72,7 +72,7 @@ private const float _maxSidewaysSpeed = 120f; // 120 → 12
         {
             if (_target.TryGetComponent<WayPointsSetting>(out WayPointsSetting wayPoints))
             {
-                GameObject next = wayPoints.OnGetWayPoint();
+                GameObject next = wayPoints.GetNextWaypoint();
                 if (next != null)
                 {
                     _target = next;
@@ -344,7 +344,7 @@ private const float _maxSidewaysSpeed = 120f; // 120 → 12
         if (!_target.TryGetComponent<WayPointsSetting>(out WayPointsSetting setting))
             return false;
 
-        nextTarget = setting.OnGetWayPoint();
+        nextTarget = setting.GetNextWaypoint();
         return nextTarget != null;
     }
 

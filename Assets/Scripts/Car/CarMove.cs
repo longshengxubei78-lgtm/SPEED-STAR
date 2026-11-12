@@ -5,7 +5,7 @@ public class CarMove
     // ===== 参照 =====
     private readonly Rigidbody _rigidbody;
     private readonly Transform _transform;
-    private readonly UphillDeceleration _uphillDeceleration;
+    private readonly SlopeDriveForceModifier _uphillDeceleration;
 
     // ===== 走行パラメータ =====
     private readonly float _moveForce;
@@ -26,7 +26,7 @@ public class CarMove
         _moveForce = moveForce;
         _maxSpeed = maxSpeed;
 
-        _uphillDeceleration = new UphillDeceleration();
+        _uphillDeceleration = new SlopeDriveForceModifier();
     }
 
 

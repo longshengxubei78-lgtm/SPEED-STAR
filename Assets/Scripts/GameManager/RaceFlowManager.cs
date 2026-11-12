@@ -10,7 +10,7 @@ public enum RacePhase
 
 public class RaceFlowManager : MonoBehaviour
 {
-    public IPublisher<RacePhase, RacePhase> _OnPhaseChaged => _onPhaseChanged;
+    public IPublisher<RacePhase, RacePhase> _OnPhaseChanged => _onPhaseChanged;
     private Publisher<RacePhase, RacePhase> _onPhaseChanged = default;
     public RacePhase _currentPhase { get; private set; }
         = RacePhase.Ready;

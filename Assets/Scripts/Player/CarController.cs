@@ -15,7 +15,7 @@ public class CarController : MonoBehaviour, IPlayerStatus
 
     [SerializeField] private float _maxSpeed = 0.0f;
     [SerializeField] private float _moveForce = 0.0f;
-    [SerializeField] private Rigidbody _myRigibody = default;
+    [SerializeField] private Rigidbody _myRigidbody = default;
     [SerializeField] private PlayerInput playerInput = default;
     [SerializeField] private LayerMask _roadLayer = default;
 
@@ -31,7 +31,7 @@ public class CarController : MonoBehaviour, IPlayerStatus
     private float _currentSpeed = 0.0f;
 
     //IPlayerStatusの実装
-    public float CurrentSpeed => _myRigibody.linearVelocity.magnitude;
+    public float CurrentSpeed => _myRigidbody.linearVelocity.magnitude;
     public Transform _playerTransform => transform;
     public InputInfo _inputInfo => _inputReader.GetInputInfo();
     private Publisher<CarState, CarState> _onStateChange
@@ -44,7 +44,7 @@ public class CarController : MonoBehaviour, IPlayerStatus
         _onStateChange = new Publisher<CarState, CarState>();
         _inputReader = new InputReader(playerInput);
         _groundDetector = new GroundDetector(transform , _roadLayer);
-        _driver = new CarMove(_myRigibody, transform, _moveForce, _maxSpeed);
+        _driver = new CarMove(_myRigidbody, transform, _moveForce, _maxSpeed);
     }
 
     private void FixedUpdate()
@@ -67,7 +67,7 @@ public class CarController : MonoBehaviour, IPlayerStatus
     }
     public void FixedTick()
     {
-        _currentSpeed = _myRigibody.linearVelocity.magnitude;
+        _currentSpeed = _myRigidbody.linearVelocity.magnitude;
         switch (_currentState)
         {
             case CarState.Idle:
@@ -167,3 +167,4 @@ public class CarController : MonoBehaviour, IPlayerStatus
         }
     }
 }
+

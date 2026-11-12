@@ -2,7 +2,7 @@ using UnityEngine;
 using XqLua;
 public class CameraTargetMove : MonoBehaviour
 {
-    [SerializeField] private Rigidbody _playerRigidBody = default;
+    [SerializeField] private Rigidbody _playerRigidbody = default;
     [SerializeField] private float _moveSpeed = 10.0f;
     [SerializeField] private float _rotateSpeed = 10.0f;
     [SerializeField] private float _cameraSideLength = 5.0f;
@@ -10,17 +10,17 @@ public class CameraTargetMove : MonoBehaviour
 
     private CarState _currentState;
     private  Vector3 _initialPosition;
-    private IDisposableSubscription _onstateChange = default;
+    private IDisposableSubscription _onStateChanged = default;
     public void Initialize(IPlayerStatus carStatus)
     {
         _playerStatus = carStatus;
 
-        _onstateChange = _playerStatus._onStateChanged.Subscribe(StateChange);
+        _onStateChanged = _playerStatus._onStateChanged.Subscribe(StateChange);
         _initialPosition = transform.position;
     }
     private void OnDisable()
     {
-        _onstateChange.Dispose();
+        _onStateChanged.Dispose();
     }
     private void StateChange(CarState oldState, CarState newState)
     {
@@ -87,7 +87,7 @@ public class CameraTargetMove : MonoBehaviour
     }
     private void MoveRotation()
     {
-        Vector3 velocity = _playerRigidBody.linearVelocity;
+        Vector3 velocity = _playerRigidbody.linearVelocity;
         if (velocity.sqrMagnitude < 0.01f)
         {
             return;

@@ -33,9 +33,9 @@ public class JumpRotation
 
     public void FixedTick()
     {
-        float maxDisttance = Mathf.Infinity;
+        float maxDistance = Mathf.Infinity;
         RaycastHit roadHit;
-        bool isRoadHit = Physics.Raycast(rb.transform.position, rb.linearVelocity.normalized, out roadHit, maxDisttance, _roadLayer);
+        bool isRoadHit = Physics.Raycast(rb.transform.position, rb.linearVelocity.normalized, out roadHit, maxDistance, _roadLayer);
 
         if (isRoadHit)
         {

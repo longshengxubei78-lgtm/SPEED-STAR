@@ -12,7 +12,7 @@ public class ResultManager : MonoBehaviour , IDisposable
     void Start()
     {
         _resultCanvas.gameObject.SetActive(false);
-        _subscription = _raceFlowManager._OnPhaseChaged.Subscribe(PopResult);
+        _subscription = _raceFlowManager._OnPhaseChanged.Subscribe(PopResult);
     }
     private void PopResult(RacePhase phase,RacePhase nextPhase)
     {

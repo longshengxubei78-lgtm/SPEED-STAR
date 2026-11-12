@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UphillDeceleration
+public class SlopeDriveForceModifier
 {
     public float CalculateDecelerationRate(Transform carTransform)
     {
