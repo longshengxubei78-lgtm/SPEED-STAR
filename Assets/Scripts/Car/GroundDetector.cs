@@ -14,6 +14,12 @@ public class GroundDetector
         _groundMask = roadLayer;
     }
     private float _startOffset = 0.6f;
+    public GroundInfo GetGroundInfo()
+    {
+        Vector3 groundNormal = CheckGround(Vector3.up);
+        bool isGrounded = GroundSearch();
+        return new GroundInfo(groundNormal, isGrounded);
+    }
     // ===== 接地判定 =====
     public Vector3 CheckGround(Vector3 _groundNormal)
     {

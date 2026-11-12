@@ -1,27 +1,35 @@
 using System;
 using UnityEngine;
+using XqLua;
+using XqLua.Extension;
 
 public class CarSoundPresenter :IDisposable
 {
     private SoundBank bank;
-    private InputData _input;
-    public CarSoundPresenter(InputData input, SoundBank soundBank)
+    private IPlayerStatus _playerStatus;
+    private Disposables _disposables;
+    public CarSoundPresenter(IPlayerStatus playerStatus ,SoundBank soundBank)
     {
         bank = soundBank;
-        _input = input;
-        input.DriftChanged.Subscribe(OnDriftChanged);
+        _playerStatus = playerStatus;
+        _disposables = new Disposables();
+        _playerStatus._onStateChanged.Subscribe(OnDriftChanged).AddTo(_disposables);
     }
 
-    private void OnDriftChanged(bool drifting)
+    private void OnDriftChanged(CarState carState, CarState oldCarState)
     {
-        if (drifting) bank.Play("Brake");
-        else bank.Stop("Brake"); // Brakeをloopにしている場合のみ必要
-
-        Debug.Log($"Drift state changed: {drifting}");
+        if(carState == CarState.Drift)
+        {
+            PlaySound("Drift");
+        }
+        else if (oldCarState == CarState.Drift)
+        {
+            StopSound("Drift");
+        }
     }
     public void Dispose()
     {
-        _input.DriftChanged.Dispose();
+        _disposables.Dispose();
     }
     public void PlaySound(string soundName)
     {

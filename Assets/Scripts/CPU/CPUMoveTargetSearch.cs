@@ -7,7 +7,7 @@ public class CPUMoveTargetSearch
     private Transform _playerTransform = default;
     private GameObject _target = default;
     private Rigidbody _myRigidbody = default;
-    private InputPresenter _inputPresenter = default;
+    //private InputPresenter _inputPresenter = default;
 
     private RaycastHit _forwardWall = default;
     private RaycastHit _rightWall = default;
@@ -44,12 +44,11 @@ private const float _maxSidewaysSpeed = 120f; // 120 → 12
     private RaycastHit _leftDiagWall = default;
     private bool _rightDiagHit = default;
     private bool _leftDiagHit = default;
-    public CPUMoveTargetSearch(Transform transform, GameObject fastTarget, InputPresenter inputPresenter,
+    public CPUMoveTargetSearch(Transform transform, GameObject fastTarget,
         Rigidbody rigidbody, Transform playerTransform, int wallMask)
     {
         _cpuTransform = transform;
         _target = fastTarget;
-        _inputPresenter = inputPresenter;
         _myRigidbody = rigidbody;
         _playerTransform = playerTransform;
         _wallMask = wallMask;   // 例: LayerMask.GetMask("Wall")
@@ -88,8 +87,6 @@ private const float _maxSidewaysSpeed = 120f; // 120 → 12
         float horizontal = GetHorizontal();
         float vertical = GetVertical() * GetCornerBrake();
         bool drift = ShouldDrift();
-        _inputPresenter.SetMoveValue(horizontal, 1f);
-        _inputPresenter.SetDriftValue(false);
     }
 
     private float GetVertical()

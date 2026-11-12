@@ -7,23 +7,23 @@ public class GoalArea : MonoBehaviour
 
     private int _cpuFinishCount;
 
-    private readonly HashSet<CPUStateMachine> _finishedCPUs
-        = new HashSet<CPUStateMachine>();
+    //private readonly HashSet<CPUStateMachine> _finishedCPUs
+    //    = new HashSet<CPUStateMachine>();
 
     private void OnTriggerEnter(Collider other)
     {
-        CPUStateMachine cpu =
-            other.GetComponentInParent<CPUStateMachine>();
+        //CPUStateMachine cpu =
+        //    other.GetComponentInParent<CPUStateMachine>();
 
-        if (cpu != null)
-        {
-            if (_finishedCPUs.Add(cpu))
-            {
-                _cpuFinishCount++;
-            }
+        //if (cpu != null)
+        //{
+        //    if (_finishedCPUs.Add(cpu))
+        //    {
+        //        _cpuFinishCount++;
+        //    }
 
-            return;
-        }
+        //    return;
+        //}
 
         CarController player =
             other.GetComponentInParent<CarController>();

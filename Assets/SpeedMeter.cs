@@ -2,9 +2,18 @@ using UnityEngine;
 using TMPro;
 public class SpeedMeter : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _speedMeter;
+    [SerializeField] private TextMeshProUGUI _speedMeter = default;
+    private IPlayerStatus _playerStatus = default;
 
-   
+    public void Initialize(IPlayerStatus playerStatus)
+    {
+        _playerStatus = playerStatus;
+    }
+
+    private void FixedUpdate()
+    {
+        SetMeterValue(_playerStatus._currentSpeed);
+    }
     public void SetMeterValue(float speedValue)
     {
         speedValue *= 3.6f;

@@ -6,76 +6,51 @@ public class CarDriver
     private readonly Rigidbody _rigidbody;
     private readonly Transform _transform;
     private readonly UphillDeceleration _uphillDeceleration;
-    private readonly GroundDetector _groundDetector = default;
-    private readonly LayerMask _groundMask;
 
     // ===== 走行パラメータ =====
     private readonly float _moveForce;
     private readonly float _maxSpeed;
-    private readonly float _rotateSpeed = 25f * 1.5f; // 元コードでは常に1.5倍が掛かっていた
-    private readonly float _sideDecelerationRate = 0.95f;
-    private readonly float _driftDecelerationRate = 0.998f;
+    private readonly float _rotateSpeed = 35f;
+    private readonly float _sideDecelerationRate = 0.85f;
+    private readonly float _driftDecelerationRate = 0.90f;
 
-    // ===== 姿勢安定 =====
-    private readonly float _rollPitchDamping = 5.0f;
-    private readonly float _uprightStrength = 10.0f;
+
 
     // ===== 状態 =====
     private bool _isGrounded;
     private Vector3 _groundNormal = Vector3.up;
 
-    public bool IsGrounded => _isGrounded;
-    public Rigidbody GetRigidbody => _rigidbody;
 
-    public CarDriver(Rigidbody rb, Transform myTransform, float moveForce,
-                     float maxSpeed, GroundDetector groundDetector)
+    public CarDriver(Rigidbody rb, Transform myTransform, float moveForce, float maxSpeed)
     {
         _rigidbody = rb;
         _transform = myTransform;
         _moveForce = moveForce;
         _maxSpeed = maxSpeed;
 
-        _groundDetector = groundDetector;
-        _uphillDeceleration = new UphillDeceleration(_transform);
+        _uphillDeceleration = new UphillDeceleration();
     }
 
-    public void CarUpdate(float horizontal, float vertical)
-    {
 
-        CheckGround();
-
-        float turnMultiplier = 1f;
-
-        Accelerate(vertical);
-
-        if (vertical != 0 || horizontal != 0)
-        {
-            Turn(horizontal, turnMultiplier);
-        }
-
-        LimitHorizontalSpeed();
-        StabilizeRotation();
-        ReduceSidewaysVelocity();
-    }
 
     // 通常走行
-    public void DriveUpdate(float horizontal, float vertical)
+    public void DriveUpdate(InputInfo input, GroundInfo groundInfo)
     {
-        CheckGround();
-        Accelerate(vertical);
-        if (vertical != 0 || horizontal != 0)
-            Turn(horizontal, 1f);
+        CheckGround(groundInfo.groundNormal);
+        Accelerate(input.vertical);
+        if (input.vertical != 0 || input.horizontal != 0)
+            Turn(input.horizontal, 1f);
         ApplyCommonPhysics();
     }
 
     // ドリフト走行
-    public void DriftUpdate(float horizontal, float vertical)
+    public void DriftUpdate(InputInfo input, GroundInfo groundInfo)
     {
-        CheckGround();
+        CheckGround(groundInfo.groundNormal);
         ApplyDriftDeceleration();
-        Accelerate(vertical);
-        if (vertical != 0 || horizontal != 0)
-            Turn(horizontal, Mathf.Abs(horizontal) * 2f);
+        Accelerate(input.vertical);
+        if (input.vertical != 0 || input.horizontal != 0)
+            Turn(input.horizontal, Mathf.Abs(input.horizontal) * 2f);
         ApplyCommonPhysics();
 
     }
@@ -83,7 +58,6 @@ public class CarDriver
     private void ApplyCommonPhysics()
     {
         LimitHorizontalSpeed();
-        StabilizeRotation();
         ReduceSidewaysVelocity();
     }
     public float GetCurrentSpeed()
@@ -92,9 +66,8 @@ public class CarDriver
     }
 
     // ===== 接地判定 =====
-    private void CheckGround()
+    private void CheckGround(Vector3 targetNormal)
     {
-        Vector3 targetNormal = _groundDetector.CheckGround(_groundNormal);
 
         if(targetNormal == Vector3.up)
         {
@@ -112,7 +85,7 @@ public class CarDriver
     {
         if (!_isGrounded) return; // 空中では加速しない
 
-        float force = _uphillDeceleration.CalculateDecelerationRate() * _moveForce * input;
+        float force = _uphillDeceleration.CalculateDecelerationRate(_transform) * _moveForce * input;
 
         // 速度が上がるほど加速を弱める
         if (_rigidbody.linearVelocity.magnitude / _maxSpeed > 0.5f)
@@ -127,7 +100,7 @@ public class CarDriver
     // ===== 旋回 =====
     private void Turn(float horizontal, float multiplier)
     {
-        if (!_isGrounded) return; // 空中では旋回しない
+        if (!_isGrounded) return; 
 
         float angle = horizontal * _rotateSpeed * Time.fixedDeltaTime * multiplier;
         _rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(0f, angle, 0f));
@@ -160,18 +133,5 @@ public class CarDriver
 
         float keep = Mathf.Pow(_sideDecelerationRate, Time.fixedDeltaTime * 60f);
         _rigidbody.linearVelocity = v - right * sidewaysSpeed * (1f - keep);
-    }
-
-    /// ===== 傾きの減衰と復元 =====
-    private void StabilizeRotation()
-    {
-        Vector3 localAV = _transform.InverseTransformDirection(_rigidbody.angularVelocity);
-        float k = Mathf.Exp(-_rollPitchDamping * Time.fixedDeltaTime);
-        localAV.x *= k;
-        localAV.z *= k;
-        _rigidbody.angularVelocity = _transform.TransformDirection(localAV);
-
-        Vector3 axis = Vector3.Cross(_transform.up, _groundNormal);
-        _rigidbody.AddTorque(axis * _uprightStrength, ForceMode.Acceleration);
     }
 }

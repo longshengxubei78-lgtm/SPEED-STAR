@@ -74,13 +74,11 @@ public class CarSpinAction : MonoBehaviour
         // 0～1の進行度
         float progress = Mathf.Clamp01(_spinElapsedTime / duration);
 
-        // 開始時の向きからY軸方向へ360度回転
         Quaternion spinRotation =
             _firstRotation * Quaternion.Euler(0f, 360f * progress, 0f);
 
         _myRigidbody.MoveRotation(spinRotation);
 
-        // 一回転したら開始時の向きを正確に設定して終了
         if (progress >= 1f)
         {
             _myRigidbody.rotation = _firstRotation;

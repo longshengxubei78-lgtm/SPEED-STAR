@@ -1,31 +1,20 @@
 using UnityEngine.InputSystem;
-using XqLua;
-
 public class InputReader
 {
-    private PlayerInput _inputActions = default;
+    private readonly InputAction _horizontal, _vertical, _drift;
 
-    private InputPresenter _inputPresenter = default;
-
-    public InputReader(InputPresenter inputPresenter, PlayerInput playerInput)
+    public InputReader(PlayerInput playerInput)
     {
-        _inputPresenter = inputPresenter;
-
-        _inputActions = playerInput;
-
-        _inputActions.actions["Drift"].performed += _inputPresenter.SetDriftValue;
-        _inputActions.actions["Drift"].canceled += _inputPresenter.SetDriftValue;
+        _horizontal = playerInput.actions["Horizontal"];
+        _vertical = playerInput.actions["Vertical"];
+        _drift = playerInput.actions["Drift"];
     }
-    public void Dispose()
-    {
-        _inputActions.actions["Drift"].performed -= _inputPresenter.SetDriftValue;
-        _inputActions.actions["Drift"].canceled -= _inputPresenter.SetDriftValue;
-    }
-    public void Tick()
-    {
-        float inputHorizontal = _inputActions.actions["Horizontal"].ReadValue<float>();
-        float inputVertical = _inputActions.actions["Vertical"].ReadValue<float>();
 
-        _inputPresenter.SetMoveValue(inputHorizontal, inputVertical);
+    public InputInfo GetInputInfo()
+    {
+        float horizontal = _horizontal.ReadValue<float>();
+        float vertical = _vertical.ReadValue<float>();
+        bool isDrifted = _drift.ReadValue<float>() > 0.5f;
+        return new InputInfo(horizontal, vertical, isDrifted);
     }
 }
