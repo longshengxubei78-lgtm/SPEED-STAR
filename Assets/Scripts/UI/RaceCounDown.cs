@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class RaceCountDown : MonoBehaviour
 {
-    [SerializeField]
-    private RaceFlowManager _raceFlowManager = default;
+    [SerializeField] private RaceFlowManager _raceFlowManager = default;
 
-    [SerializeField]
-    private TextMeshProUGUI _textMeshProUGUI = default;
+    [SerializeField] private TextMeshProUGUI _textMeshProUGUI = default;
 
-    [SerializeField, Min(1)]
-    private int _countDownSeconds = 3;
+    [SerializeField, Min(1)] private int _countDownSeconds = 3;
 
     private IEnumerator Start()
     {
@@ -28,7 +25,6 @@ public class RaceCountDown : MonoBehaviour
 
         _raceFlowManager.StartRace();
 
-        // GOを1秒間表示
         yield return new WaitForSeconds(1f);
 
         _textMeshProUGUI.gameObject.SetActive(false);

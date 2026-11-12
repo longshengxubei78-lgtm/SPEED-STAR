@@ -778672,6 +778672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 669f3eb6f6442e4418c2908679a336e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RaceFlowManager
+  _playerCarController: {fileID: 1191854915}
 --- !u!4 &370669793
 Transform:
   m_ObjectHideFlags: 0
@@ -802648,7 +802649,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraTargetMove
   _playerRigidBody: {fileID: 1191854910}
-  _carController: {fileID: 1191854915}
   _moveSpeed: 1
   _rotateSpeed: 10
   _cameraSideLength: 2
@@ -825047,6 +825047,54 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1124695522
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1124695524}
+  - component: {fileID: 1124695523}
+  m_Layer: 0
+  m_Name: Intializer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1124695523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1124695522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 288aa71c780ec58429a3148af748ee81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Initializer
+  _carController: {fileID: 1191854915}
+  _cameraTargetMove: {fileID: 691742966}
+  _soundBank: {fileID: 1236250183}
+  _speedMeter: {fileID: 1692757203}
+--- !u!4 &1124695524
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1124695522}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 144.01549, y: 13.85769, z: 209.91068}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1125047360
 GameObject:
   m_ObjectHideFlags: 0
@@ -892780,3 +892828,4 @@ SceneRoots:
   - {fileID: 1838645861}
   - {fileID: 2093002127}
   - {fileID: 691742967}
+  - {fileID: 1124695524}

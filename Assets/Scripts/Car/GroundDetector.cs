@@ -16,12 +16,11 @@ public class GroundDetector
     private float _startOffset = 0.6f;
     public GroundInfo GetGroundInfo()
     {
-        Vector3 groundNormal = CheckGround(Vector3.up);
+        Vector3 groundNormal = CheckGroundNomal(Vector3.up);
         bool isGrounded = GroundSearch();
         return new GroundInfo(groundNormal, isGrounded);
     }
-    // ===== 接地判定 =====
-    public Vector3 CheckGround(Vector3 _groundNormal)
+    private Vector3 CheckGroundNomal(Vector3 _groundNormal)
     {
         bool _isGrounded = Physics.Raycast(
             _carTransform.position, -_carTransform.up, out RaycastHit hit,
@@ -32,23 +31,11 @@ public class GroundDetector
 
         return _groundNormal;
     }
-    public bool GroundSearch()
+    private bool GroundSearch()
     {
         Vector3 origin = _carTransform.position + _carTransform.up * _startOffset;
 
-        bool isGround = Physics.BoxCast(origin, _halfExtents, -_carTransform.up *0.1f, _carTransform.rotation, _maxDistance + _startOffset);
+        bool isGround = Physics.BoxCast(origin, _halfExtents, -_carTransform.up *0.1f, _carTransform.rotation, _maxDistance + _startOffset, _groundMask);
         return isGround;
-    }
-    public float GroundDistance()
-    {
-        RaycastHit hit;
-        bool isGroundHit=Physics.Raycast(_carTransform.position, Vector3.down,out hit, Mathf.Infinity);
-        if(!isGroundHit)
-        {
-            return Mathf.Infinity;
-        }
-        float distance = hit.distance;
-
-        return distance;
     }
 }

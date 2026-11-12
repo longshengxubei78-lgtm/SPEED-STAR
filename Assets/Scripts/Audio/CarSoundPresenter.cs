@@ -1,24 +1,23 @@
 using System;
-using UnityEngine;
 using XqLua;
 using XqLua.Extension;
 
 public class CarSoundPresenter :IDisposable
 {
-    private SoundBank bank;
+    private SoundBank _bank;
     private IPlayerStatus _playerStatus;
     private Disposables _disposables;
     public CarSoundPresenter(IPlayerStatus playerStatus ,SoundBank soundBank)
     {
-        bank = soundBank;
+        _bank = soundBank;
         _playerStatus = playerStatus;
         _disposables = new Disposables();
         _playerStatus._onStateChanged.Subscribe(OnDriftChanged).AddTo(_disposables);
     }
 
-    private void OnDriftChanged(CarState carState, CarState oldCarState)
+    private void OnDriftChanged(CarState oldCarState, CarState newCarState)
     {
-        if(carState == CarState.Drift)
+        if(newCarState == CarState.Drift)
         {
             PlaySound("Drift");
         }
@@ -33,10 +32,10 @@ public class CarSoundPresenter :IDisposable
     }
     public void PlaySound(string soundName)
     {
-        bank.Play(soundName);
+        _bank.Play(soundName);
     }
     public void StopSound(string soundName)
     {
-        bank.Stop(soundName);
+        _bank.Stop(soundName);
     }
 }

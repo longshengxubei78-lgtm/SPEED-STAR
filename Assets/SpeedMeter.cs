@@ -12,7 +12,7 @@ public class SpeedMeter : MonoBehaviour
 
     private void FixedUpdate()
     {
-        SetMeterValue(_playerStatus._currentSpeed);
+        SetMeterValue(_playerStatus.CurrentSpeed);
     }
     public void SetMeterValue(float speedValue)
     {

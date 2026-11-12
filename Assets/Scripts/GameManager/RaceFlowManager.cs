@@ -3,9 +3,9 @@ using XqLua;
 
 public enum RacePhase
 {
-    Ready,      // レース開始前
-    Racing,     // レース中
-    Finished    // ゴール
+    Ready,  
+    Racing, 
+    Finished
 }
 
 public class RaceFlowManager : MonoBehaviour
@@ -15,6 +15,8 @@ public class RaceFlowManager : MonoBehaviour
     public RacePhase _currentPhase { get; private set; }
         = RacePhase.Ready;
 
+
+    [SerializeField]private CarController _playerCarController = default;
     private void Awake()
     {
         _onPhaseChanged = new Publisher<RacePhase, RacePhase>();
@@ -42,24 +44,10 @@ public class RaceFlowManager : MonoBehaviour
         if (_currentPhase == nextPhase)
             return;
 
-        bool isValidTransition =
-            (_currentPhase == RacePhase.Ready &&
-             nextPhase == RacePhase.Racing)
-            ||
-            (_currentPhase == RacePhase.Racing &&
-             nextPhase == RacePhase.Finished);
-
-        if (!isValidTransition)
-        {
-            Debug.LogWarning(
-                $"不正な状態遷移: {_currentPhase} -> {nextPhase}"
-            );
-            return;
-        }
-
         RacePhase previousPhase = _currentPhase;
         _currentPhase = nextPhase;
 
+        _playerCarController.ApplyPhase(_currentPhase, nextPhase);
         _onPhaseChanged?.Invoke(previousPhase, nextPhase);
     }
 }

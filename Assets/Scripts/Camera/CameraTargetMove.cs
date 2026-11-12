@@ -60,15 +60,15 @@ public class CameraTargetMove : MonoBehaviour
                 RotateTo(_playerStatus._playerTransform.rotation);
                 break;
             case CarState.Move:
-                MoveCamera(_playerStatus.InputHorizontal * 0.5f);
+                MoveCamera(_playerStatus._inputInfo.horizontal * 0.5f);
                 MoveRotation();
                 break;
             case CarState.Drift:
-                MoveCamera(_playerStatus.InputHorizontal);
+                MoveCamera(_playerStatus._inputInfo.horizontal);
                 MoveRotation();
                 break;
             case CarState.Air:
-                MoveCamera(_playerStatus.InputHorizontal);
+                MoveCamera(_playerStatus._inputInfo.horizontal);
                 MoveRotation();
                 break;
         }
