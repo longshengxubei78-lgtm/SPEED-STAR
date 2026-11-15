@@ -1,5 +1,5 @@
 using UnityEngine;
-
+//可能ならMVPパターンに
 public class Initializer : MonoBehaviour
 {
     [SerializeField] private CarController _carController = default;

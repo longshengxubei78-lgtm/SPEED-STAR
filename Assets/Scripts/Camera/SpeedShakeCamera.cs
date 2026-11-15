@@ -9,7 +9,8 @@ public class SpeedShakeCamera : MonoBehaviour
     private float _maxCameraShakeValue = 0.9f;
     [SerializeField] private float _speedThreshold = 10f;
     [SerializeField] private float _maxSpeedForFullShake = 20f;
-
+    //カーコントローラーのカレントスピードを使う
+    //
     private void Update()
     {
         float currentSpeed = _rb.linearVelocity.magnitude;

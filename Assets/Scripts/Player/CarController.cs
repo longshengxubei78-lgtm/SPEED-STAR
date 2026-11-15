@@ -8,7 +8,7 @@ public enum CarState {
     Drift,
     Air 
 }
-
+//言いたいことはメモにまとめておく
 public class CarController : MonoBehaviour, IPlayerStatus
 {
     public CarState _currentState = CarState.Idle;
@@ -20,7 +20,6 @@ public class CarController : MonoBehaviour, IPlayerStatus
     [SerializeField] private LayerMask _roadLayer = default;
 
     private InputReader _inputReader;
-    private bool _canControl;
 
     // readonly を外し、Awake で代入する
     private CarMove _driver;
@@ -28,8 +27,6 @@ public class CarController : MonoBehaviour, IPlayerStatus
 
     private const float _stopSpeedThreshold = 0.1f;
     public const float _inputThreshold = 0.01f;
-    private float _currentSpeed = 0.0f;
-
     //IPlayerStatusの実装
     public float CurrentSpeed => _myRigidbody.linearVelocity.magnitude;
     public Transform _playerTransform => transform;
@@ -46,97 +43,81 @@ public class CarController : MonoBehaviour, IPlayerStatus
         _groundDetector = new GroundDetector(transform , _roadLayer);
         _driver = new CarMove(_myRigidbody, transform, _moveForce, _maxSpeed);
     }
-
-    private void FixedUpdate()
-    {
-        if (!_canControl)
-            return;
-        FixedTick();
-    }
-    private void SwitchState(CarState newState)
-    {
-        _onStateChange.Invoke(_currentState, newState);
-
-        Exit();
-        _currentState = newState;
-        Enter();
-    }
-    public void ApplyPhase(RacePhase phase, RacePhase nextPhase)
-    {
-        _canControl = nextPhase == RacePhase.Racing;
-    }
+    //誰かから呼んでもらう、GameManagerなど、
+    //GameManagerがRacePhaseを管理していて、CarControllerにApplyPhaseを呼ぶ
+    //フックが必要ならステートパターン
     public void FixedTick()
     {
-        _currentSpeed = _myRigidbody.linearVelocity.magnitude;
+        GroundInfo groundInfo = _groundDetector.GetGroundInfo();
+        InputInfo inputInfo = _inputReader.GetInputInfo();
+
+        FixedTick(groundInfo, inputInfo);
+    }
+
+    private CarState EvaluateNextState(GroundInfo ground, InputInfo input, float speed)
+    {
+        if (!ground.isGrounded)
+        {
+            return CarState.Air;
+        }
+
+        if (speed <= _stopSpeedThreshold)
+        {
+            return CarState.Idle;
+        }
+
+        if (input.isDrifted)
+        {
+            return CarState.Drift;
+        }
+        return CarState.Move;
+    }
+
+    private void FixedTick(GroundInfo groundInfo, InputInfo inputInfo)
+    {
+        float currentSpeed = CurrentSpeed;
+        CarState nextState = EvaluateNextState(groundInfo, inputInfo, currentSpeed);
         switch (_currentState)
         {
             case CarState.Idle:
-                InputInfo input = _inputReader.GetInputInfo();
-                if (input.vertical != 0)
+                if (nextState != _currentState)
                 {
-                    SwitchState(CarState.Move);
-                    return;
+                    SwitchState(nextState);
                 }
                 break;
 
             case CarState.Move:
-                GroundInfo moveGroundInfo = _groundDetector.GetGroundInfo();
-                if (!moveGroundInfo.isGrounded)
+                _driver.DriveUpdate(inputInfo, groundInfo);
+                if (nextState != _currentState)
                 {
-                    SwitchState(CarState.Air);
-                    return;
-                }
-                InputInfo moveInput = _inputReader.GetInputInfo();
-                if (moveInput.isDrifted)
-                {
-                    SwitchState(CarState.Drift);
-                    return;
-                }
-                GroundInfo groundInfo = _groundDetector.GetGroundInfo();
-                _driver.DriveUpdate(moveInput, groundInfo);
-
-                if (Mathf.Abs(moveInput.vertical) < _inputThreshold &&
-                    Mathf.Abs(_currentSpeed) < _stopSpeedThreshold)
-                {
-                    SwitchState(CarState.Idle);
-                    return;
+                    SwitchState(nextState);
                 }
                 break;
 
             case CarState.Drift:
-                GroundInfo driftGroundInfo = _groundDetector.GetGroundInfo();
-                if (!driftGroundInfo.isGrounded)
+                _driver.DriftUpdate(inputInfo, groundInfo);
+                if (nextState != _currentState)
                 {
-                    SwitchState(CarState.Air);
-                    return;
+                    SwitchState(nextState);
                 }
-                InputInfo driftInput = _inputReader.GetInputInfo();
-                if (Mathf.Abs(driftInput.vertical) < _inputThreshold &&
-                    Mathf.Abs(_currentSpeed) < _stopSpeedThreshold)
-                {
-                    SwitchState(CarState.Idle);
-                    return;
-                }
-                if (!driftInput.isDrifted)
-                {
-                    SwitchState(CarState.Move);
-                    return;
-                }
-                _driver.DriftUpdate(driftInput, driftGroundInfo);
-
                 break;
 
             case CarState.Air:
-                GroundInfo airGroundInfo = _groundDetector.GetGroundInfo();
-                if (airGroundInfo.isGrounded)
+                if (nextState != _currentState)
                 {
-                    SwitchState(CarState.Move);
-                    return;
+                    SwitchState(nextState);
                 }
                 break;
         }
     }
-
+    private void SwitchState(CarState newState)
+    {
+        CarState oldState = _currentState;
+        Exit();
+        _currentState = newState;
+        Enter();
+        _onStateChange.Invoke(oldState, newState);
+    }
     private void Enter()
     {
         switch (_currentState)

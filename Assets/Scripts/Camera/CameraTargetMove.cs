@@ -1,5 +1,6 @@
 using UnityEngine;
 using XqLua;
+//CarControllerのなかに入れていい。
 public class CameraTargetMove : MonoBehaviour
 {
     [SerializeField] private Rigidbody _playerRigidbody = default;
@@ -9,14 +10,12 @@ public class CameraTargetMove : MonoBehaviour
     private IPlayerStatus _playerStatus;
 
     private CarState _currentState;
-    private  Vector3 _initialPosition;
     private IDisposableSubscription _onStateChanged = default;
     public void Initialize(IPlayerStatus carStatus)
     {
         _playerStatus = carStatus;
-
+        //iranai
         _onStateChanged = _playerStatus._onStateChanged.Subscribe(StateChange);
-        _initialPosition = transform.position;
     }
     private void OnDisable()
     {
@@ -52,11 +51,13 @@ public class CameraTargetMove : MonoBehaviour
                 break;
         }
     }
+    //CarControllerに移動
     private void LateUpdate()
     {
         switch (_currentState)
         {
             case CarState.Idle:
+                //変数名が分かりにくいので意味どおりに直す。
                 RotateTo(_playerStatus._playerTransform.rotation);
                 break;
             case CarState.Move:

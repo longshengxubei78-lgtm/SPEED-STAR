@@ -14,9 +14,6 @@ public class RaceFlowManager : MonoBehaviour
     private Publisher<RacePhase, RacePhase> _onPhaseChanged = default;
     public RacePhase _currentPhase { get; private set; }
         = RacePhase.Ready;
-
-
-    [SerializeField]private CarController _playerCarController = default;
     private void Awake()
     {
         _onPhaseChanged = new Publisher<RacePhase, RacePhase>();
@@ -47,7 +44,6 @@ public class RaceFlowManager : MonoBehaviour
         RacePhase previousPhase = _currentPhase;
         _currentPhase = nextPhase;
 
-        _playerCarController.ApplyPhase(_currentPhase, nextPhase);
-        _onPhaseChanged?.Invoke(previousPhase, nextPhase);
+        _onPhaseChanged.Invoke(previousPhase, nextPhase);
     }
 }

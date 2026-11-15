@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class JumpRotation
 {
-    [SerializeField] private float rotations = 3f;
-    [SerializeField] private float duration = 2f;
+    //[SerializeField] private float rotations = 3f;
+    //[SerializeField] private float duration = 2f;
 
     private Rigidbody rb;
-    private Quaternion startRotation;
-    private float elapsed;
-    private bool isSpinning;
+    //private Quaternion startRotation;
+    //private float elapsed;
+    //private bool isSpinning;
     private LayerMask _roadLayer = default;
     public JumpRotation(Rigidbody rigidbody,LayerMask roadLayer)
     {
@@ -16,20 +16,20 @@ public class JumpRotation
         _roadLayer = roadLayer;
     }
 
-    public void StartSpin(float seconds)
-    {
-        duration = Mathf.Max(0.01f, seconds);
-        startRotation = rb.rotation;
-        elapsed = 0f;
-        isSpinning = true;
-    }
-    public void EndSpin(float seconds)
-    {
-        duration = Mathf.Max(0.01f, seconds);
-        startRotation = default;
-        elapsed = 0f;
-        isSpinning = false;
-    }
+    //public void StartSpin(float seconds)
+    //{
+    //    duration = Mathf.Max(0.01f, seconds);
+    //    startRotation = rb.rotation;
+    //    elapsed = 0f;
+    //    isSpinning = true;
+    //}
+    //public void EndSpin(float seconds)
+    //{
+    //    duration = Mathf.Max(0.01f, seconds);
+    //    startRotation = default;
+    //    elapsed = 0f;
+    //    isSpinning = false;
+    //}
 
     public void FixedTick()
     {

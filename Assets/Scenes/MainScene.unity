@@ -802648,7 +802648,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1f2669bacc8d54eb82502ef3e86b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraTargetMove
-  _playerRigidBody: {fileID: 1191854910}
+  _playerRigidbody: {fileID: 1191854910}
   _moveSpeed: 1
   _rotateSpeed: 10
   _cameraSideLength: 2
@@ -847847,6 +847847,10 @@ PrefabInstance:
       propertyPath: _speedMeter
       value: 
       objectReference: {fileID: 1692757203}
+    - target: {fileID: 7167873012954243332, guid: 439a0e2ce03c53f45b4f89044368d8aa, type: 3}
+      propertyPath: _myRigidbody
+      value: 
+      objectReference: {fileID: 1191854910}
     - target: {fileID: 7167873012954243332, guid: 439a0e2ce03c53f45b4f89044368d8aa, type: 3}
       propertyPath: _raceFlowManager
       value: 

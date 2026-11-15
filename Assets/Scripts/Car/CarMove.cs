@@ -11,8 +11,9 @@ public class CarMove
     private readonly float _moveForce;
     private readonly float _maxSpeed;
     private readonly float _rotateSpeed = 35f;
-    private readonly float _sideDecelerationRate = 0.85f;
-    private readonly float _driftDecelerationRate = 0.999f;
+    private readonly float _sideDecelerationRate = 0.65f;
+    private readonly float _driftDecelerationRate = 0.99f;
+    private readonly float _driftTurnMultiplier = 1.5f;
 
 
 
@@ -37,7 +38,9 @@ public class CarMove
         CheckGround(groundInfo.groundNormal);
         Accelerate(input.vertical);
         if (input.vertical != 0 || input.horizontal != 0)
+        {
             Turn(input.horizontal, 1f);
+        }
         LimitHorizontalSpeed();
         ReduceSidewaysVelocity();
     }
@@ -49,7 +52,9 @@ public class CarMove
         ApplyDriftDeceleration();
         Accelerate(input.vertical);
         if (input.vertical != 0 || input.horizontal != 0)
-            Turn(input.horizontal, Mathf.Abs(input.horizontal) * 2f);
+        {
+            Turn(input.horizontal, Mathf.Abs(input.horizontal) * _driftTurnMultiplier);
+        }
         LimitHorizontalSpeed();
         ReduceSidewaysVelocity();
     }
@@ -98,12 +103,21 @@ public class CarMove
         Vector3 horizontal = Vector3.ClampMagnitude(new Vector3(velocity.x, 0f, velocity.z), _maxSpeed);
         _rigidbody.linearVelocity = new Vector3(horizontal.x, velocity.y, horizontal.z);
     }
+    //↑
+    //linearVelocityなので関数にする
+    //引数と戻り値ををつけることで何をしているかがわかる。
+    //rigidbody.linearVelocityをとって、加工しているところを関数にする。
+    //↓
+
 
     /// <summary>
     /// 横滑り抑制
     /// </summary>
     private void ReduceSidewaysVelocity()
     {
+        //二つの角度のない席の大きさで減速率を調整するべき
+        //二つの角度がどれくらい似ているかが内積
+
         Vector3 v = _rigidbody.linearVelocity;
         Vector3 right = Vector3.ProjectOnPlane(_transform.right, _groundNormal).normalized;
         float sidewaysSpeed = Vector3.Dot(v, right);
