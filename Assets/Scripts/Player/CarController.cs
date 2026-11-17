@@ -60,16 +60,32 @@ public class CarController : MonoBehaviour, IPlayerStatus
         {
             return CarState.Air;
         }
+        bool hasMoveInput = false;
+        if (Mathf.Abs(input.vertical) > _inputThreshold)
+        {
+            hasMoveInput = true;
+        }
 
-        if (speed <= _stopSpeedThreshold)
+        bool isMoving;
+        if (speed > _stopSpeedThreshold)
+        {
+            isMoving = true;
+        }
+        else
+        {
+            isMoving = false;
+        }
+
+        if (!hasMoveInput && !isMoving)
         {
             return CarState.Idle;
         }
 
-        if (input.isDrifted)
+        if (input.isDrifted && isMoving)
         {
             return CarState.Drift;
         }
+
         return CarState.Move;
     }
 

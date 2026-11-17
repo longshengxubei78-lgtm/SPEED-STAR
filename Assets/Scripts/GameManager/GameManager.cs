@@ -6,7 +6,6 @@ public class GameManager : MonoBehaviour
     [SerializeField]private RaceFlowManager _raceFlowManager = default;
     private void FixedUpdate()
     {
-        print(_raceFlowManager._currentPhase);
         switch (_raceFlowManager._currentPhase)
         {
             case RacePhase.Ready:

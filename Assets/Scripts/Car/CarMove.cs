@@ -12,7 +12,7 @@ public class CarMove
     private readonly float _maxSpeed;
     private readonly float _rotateSpeed = 35f;
     private readonly float _sideDecelerationRate = 0.65f;
-    private readonly float _driftDecelerationRate = 0.99f;
+    private readonly float _driftDecelerationRate = 0.995f;
     private readonly float _driftTurnMultiplier = 1.5f;
 
 
