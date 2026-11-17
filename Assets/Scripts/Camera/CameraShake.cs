@@ -65,7 +65,7 @@ public class CameraShake : MonoBehaviour
         {
             _shake.AmplitudeGain = time;
             _shake.FrequencyGain = time;
-            time += Time.deltaTime;
+            time -= Time.deltaTime;
             yield return null;
         }
         _shake.AmplitudeGain = 0f;

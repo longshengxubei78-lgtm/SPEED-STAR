@@ -8,7 +8,6 @@ public enum CarState {
     Drift,
     Air 
 }
-//言いたいことはメモにまとめておく
 public class CarController : MonoBehaviour, IPlayerStatus
 {
     public CarState _currentState = CarState.Idle;
@@ -43,8 +42,6 @@ public class CarController : MonoBehaviour, IPlayerStatus
         _groundDetector = new GroundDetector(transform , _roadLayer);
         _driver = new CarMove(_myRigidbody, transform, _moveForce, _maxSpeed);
     }
-    //誰かから呼んでもらう、GameManagerなど、
-    //GameManagerがRacePhaseを管理していて、CarControllerにApplyPhaseを呼ぶ
     //フックが必要ならステートパターン
     public void FixedTick()
     {
@@ -91,38 +88,28 @@ public class CarController : MonoBehaviour, IPlayerStatus
 
     private void FixedTick(GroundInfo groundInfo, InputInfo inputInfo)
     {
-        float currentSpeed = CurrentSpeed;
-        CarState nextState = EvaluateNextState(groundInfo, inputInfo, currentSpeed);
+        float currentSpeed = CurrentSpeed; 
+        CarState next = EvaluateNextState(groundInfo, inputInfo, CurrentSpeed);
+        if (next != _currentState)
+        {
+            SwitchState(next);
+        }
+
+
         switch (_currentState)
         {
             case CarState.Idle:
-                if (nextState != _currentState)
-                {
-                    SwitchState(nextState);
-                }
                 break;
 
             case CarState.Move:
                 _driver.DriveUpdate(inputInfo, groundInfo);
-                if (nextState != _currentState)
-                {
-                    SwitchState(nextState);
-                }
                 break;
 
             case CarState.Drift:
                 _driver.DriftUpdate(inputInfo, groundInfo);
-                if (nextState != _currentState)
-                {
-                    SwitchState(nextState);
-                }
                 break;
 
             case CarState.Air:
-                if (nextState != _currentState)
-                {
-                    SwitchState(nextState);
-                }
                 break;
         }
     }

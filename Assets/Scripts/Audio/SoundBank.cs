@@ -80,7 +80,6 @@ public class SoundBank : MonoBehaviour
             return;
         }
         Send(entry);
-        Debug.Log($"[Audio] PlaySE clip={entry.clip.name} slot={sounds.IndexOf(entry)} vol={entry.volume} pitch={entry.pitch} loop={entry.loop} isPlaying={AudioManager.Instance.IsPlayingSE(loopHandles.GetValueOrDefault(entry))}");
     }
 
     /// <summary>リストの番号で再生する（UnityEventから呼ぶ用）</summary>
@@ -103,7 +102,7 @@ public class SoundBank : MonoBehaviour
     {
         if (!table.TryGetValue(key, out SoundEntry entry))
         {
-            Debug.LogWarning($"{name}: key「{key}」は登録されていません", this);
+            //Debug.LogWarning($"{name}: key「{key}」は登録されていません", this);
             return;
         }
         StopLoop(entry);

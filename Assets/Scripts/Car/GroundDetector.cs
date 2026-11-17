@@ -16,20 +16,23 @@ public class GroundDetector
     private float _startOffset = 0.6f;
     public GroundInfo GetGroundInfo()
     {
-        Vector3 groundNormal = CheckGroundNormal(Vector3.up);
+        Vector3 groundNormal = CheckGroundNormal();
         bool isGrounded = GroundSearch();
         return new GroundInfo(groundNormal, isGrounded);
     }
-    private Vector3 CheckGroundNormal(Vector3 _groundNormal)
+    private Vector3 CheckGroundNormal()
     {
         bool _isGrounded = Physics.Raycast(
             _carTransform.position, -_carTransform.up, out RaycastHit hit,
             _groundRayLength, _groundMask);
 
-        Vector3 targetNormal = _isGrounded ? hit.normal : Vector3.up;
-        _groundNormal = Vector3.Slerp(_groundNormal, targetNormal, 0.2f);
+        Vector3 targetNormal = Vector3.up;
+        if (_isGrounded)
+        {
+            targetNormal = hit.normal;
+        }
 
-        return _groundNormal;
+        return targetNormal;
     }
     private bool GroundSearch()
     {
