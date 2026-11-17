@@ -3,9 +3,9 @@ using TMPro;
 public class SpeedMeter : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _speedMeter = default;
-    private IPlayerStatus _playerStatus = default;
+    private IPlayerData _playerStatus = default;
 
-    public void Initialize(IPlayerStatus playerStatus)
+    public void Initialize(IPlayerData playerStatus)
     {
         _playerStatus = playerStatus;
     }

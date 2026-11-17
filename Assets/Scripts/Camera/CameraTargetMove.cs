@@ -7,15 +7,15 @@ public class CameraTargetMove : MonoBehaviour
     [SerializeField] private float _moveSpeed = 10.0f;
     [SerializeField] private float _rotateSpeed = 10.0f;
     [SerializeField] private float _cameraSideLength = 5.0f;
-    private IPlayerStatus _playerStatus;
+    private IPlayerData _playerData;
 
     private CarState _currentState;
     private IDisposableSubscription _onStateChanged = default;
-    public void Initialize(IPlayerStatus carStatus)
+    public void Initialize(IPlayerData carStatus)
     {
-        _playerStatus = carStatus;
+        _playerData = carStatus;
         //iranai
-        _onStateChanged = _playerStatus._onStateChanged.Subscribe(StateChange);
+        _onStateChanged = _playerData._onStateChanged.Subscribe(StateChange);
     }
     private void OnDisable()
     {
@@ -57,32 +57,32 @@ public class CameraTargetMove : MonoBehaviour
         switch (_currentState)
         {
             case CarState.Idle:
-                //変数名が分かりにくいので意味どおりに直す。
-                RotateTo(_playerStatus._playerTransform.rotation);
+                transform.rotation = Quaternion.Slerp(
+            transform.rotation, _playerData._playerTransform.rotation, _rotateSpeed * Time.deltaTime);
                 break;
             case CarState.Move:
-                MoveCamera(_playerStatus._inputInfo.horizontal * 0.5f);
+                MoveCamera(_playerData._inputInfo.horizontal * 0.5f);
                 MoveRotation();
                 break;
             case CarState.Drift:
-                MoveCamera(_playerStatus._inputInfo.horizontal);
+                MoveCamera(_playerData._inputInfo.horizontal);
                 MoveRotation();
                 break;
             case CarState.Air:
-                MoveCamera(_playerStatus._inputInfo.horizontal);
+                MoveCamera(_playerData._inputInfo.horizontal);
                 MoveRotation();
                 break;
         }
     }
     private void Update()
     {
-        transform.position = _playerStatus._playerTransform.position;
+        transform.position = _playerData._playerTransform.position;
     }
     private void MoveCamera(float driftAmount)
     {
         driftAmount *= _cameraSideLength;
 
-        Vector3 targetPosition = _playerStatus._playerTransform.position + transform.right * driftAmount;
+        Vector3 targetPosition = _playerData._playerTransform.position + transform.right * driftAmount;
 
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * _moveSpeed);
     }
@@ -94,11 +94,7 @@ public class CameraTargetMove : MonoBehaviour
             return;
         }
 
-        RotateTo(Quaternion.LookRotation(velocity.normalized));
-    }
-    private void RotateTo(Quaternion target)
-    {
         transform.rotation = Quaternion.Slerp(
-            transform.rotation, target, _rotateSpeed * Time.deltaTime);
+            transform.rotation, Quaternion.LookRotation(velocity.normalized), _rotateSpeed * Time.deltaTime);
     }
 }

@@ -8,7 +8,7 @@ public enum CarState {
     Drift,
     Air 
 }
-public class CarController : MonoBehaviour, IPlayerStatus
+public class CarController : MonoBehaviour, IPlayerData
 {
     public CarState _currentState = CarState.Idle;
 

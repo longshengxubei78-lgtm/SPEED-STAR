@@ -5,9 +5,9 @@ using XqLua.Extension;
 public class CarSoundPresenter :IDisposable
 {
     private SoundBank _bank;
-    private IPlayerStatus _playerStatus;
+    private IPlayerData _playerStatus;
     private Disposables _disposables;
-    public CarSoundPresenter(IPlayerStatus playerStatus ,SoundBank soundBank)
+    public CarSoundPresenter(IPlayerData playerStatus ,SoundBank soundBank)
     {
         _bank = soundBank;
         _playerStatus = playerStatus;

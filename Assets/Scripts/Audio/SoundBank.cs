@@ -76,7 +76,7 @@ public class SoundBank : MonoBehaviour
     {
         if (!table.TryGetValue(key, out SoundEntry entry))
         {
-            Debug.LogWarning($"{name}: key「{key}」は登録されていません", this);
+            //Debug.LogWarning($"{name}: key「{key}」は登録されていません", this);
             return;
         }
         Send(entry);

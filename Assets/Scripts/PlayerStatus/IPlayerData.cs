@@ -1,7 +1,7 @@
 using UnityEngine;
 using XqLua;
 
-public interface IPlayerStatus
+public interface IPlayerData
 {
     float CurrentSpeed { get; }
     InputInfo _inputInfo { get; }
