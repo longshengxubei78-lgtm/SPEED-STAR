@@ -61,6 +61,11 @@ public class CameraTargetMove : MonoBehaviour
             transform.rotation, _playerData._playerTransform.rotation, _rotateSpeed * Time.deltaTime);
                 break;
             case CarState.Move:
+                if(_playerRigidbody.linearVelocity.magnitude < 10f)
+                {
+                    transform.rotation = Quaternion.Slerp(transform.rotation, _playerData._playerTransform.rotation, _rotateSpeed * Time.deltaTime);
+                    return;
+                }
                 MoveCamera(_playerData._inputInfo.horizontal * 0.5f);
                 MoveRotation();
                 break;

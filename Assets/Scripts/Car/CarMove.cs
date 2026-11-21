@@ -41,8 +41,8 @@ public class CarMove
         {
             Turn(input.horizontal, 1f);
         }
-        LimitHorizontalSpeed();
-        ReduceSidewaysVelocity();
+        LimitHorizontalSpeed(_rigidbody.linearVelocity);
+        ReduceSidewaysVelocity(_rigidbody.linearVelocity);
     }
 
     // ドリフト走行
@@ -55,8 +55,8 @@ public class CarMove
         {
             Turn(input.horizontal, Mathf.Abs(input.horizontal) * _driftTurnMultiplier);
         }
-        LimitHorizontalSpeed();
-        ReduceSidewaysVelocity();
+        LimitHorizontalSpeed(_rigidbody.linearVelocity);
+        ReduceSidewaysVelocity(_rigidbody.linearVelocity);
     }
 
     private void CheckGround(Vector3 targetNormal)
@@ -97,32 +97,22 @@ public class CarMove
    /// <summary>
    /// 速度制限(水平のみ)
    /// </summary>
-    private void LimitHorizontalSpeed()
+    private void LimitHorizontalSpeed(Vector3 linearVelocity)
     {
-        Vector3 velocity = _rigidbody.linearVelocity;
-        Vector3 horizontal = Vector3.ClampMagnitude(new Vector3(velocity.x, 0f, velocity.z), _maxSpeed);
-        _rigidbody.linearVelocity = new Vector3(horizontal.x, velocity.y, horizontal.z);
+        Vector3 horizontal = Vector3.ClampMagnitude(new Vector3(linearVelocity.x, 0f, linearVelocity.z), _maxSpeed);
+        _rigidbody.linearVelocity = new Vector3(horizontal.x, linearVelocity.y, horizontal.z);
     }
-    //↑
-    //linearVelocityなので関数にする
-    //引数と戻り値ををつけることで何をしているかがわかる。
-    //rigidbody.linearVelocityをとって、加工しているところを関数にする。
-    //↓
 
 
     /// <summary>
     /// 横滑り抑制
     /// </summary>
-    private void ReduceSidewaysVelocity()
+    private void ReduceSidewaysVelocity(Vector3 linearVelocity)
     {
-        //二つの角度のない席の大きさで減速率を調整するべき
-        //二つの角度がどれくらい似ているかが内積
-
-        Vector3 v = _rigidbody.linearVelocity;
         Vector3 right = Vector3.ProjectOnPlane(_transform.right, _groundNormal).normalized;
-        float sidewaysSpeed = Vector3.Dot(v, right);
+        float sidewaysSpeed = Vector3.Dot(linearVelocity, right);
 
         float keep = Mathf.Pow(_sideDecelerationRate, Time.fixedDeltaTime * 60f);
-        _rigidbody.linearVelocity = v - right * sidewaysSpeed * (1f - keep);
+        _rigidbody.linearVelocity = linearVelocity - right * sidewaysSpeed * (1f - keep);
     }
 }

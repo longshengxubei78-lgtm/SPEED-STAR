@@ -16,9 +16,11 @@ public struct GroundInfo
 {
     public Vector3 groundNormal;
     public bool isGrounded;
-    public GroundInfo (Vector3 groundNormal, bool isGrounded)
+    public float groundDistance;
+    public GroundInfo (Vector3 groundNormal, bool isGrounded, float groundDistance)
     {
         this.groundNormal = groundNormal;
         this.isGrounded = isGrounded;
+        this.groundDistance = groundDistance;
     }
 }

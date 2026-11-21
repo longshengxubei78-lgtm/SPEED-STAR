@@ -18,13 +18,14 @@ public class GroundDetector
     {
         Vector3 groundNormal = CheckGroundNormal();
         bool isGrounded = GroundSearch();
-        return new GroundInfo(groundNormal, isGrounded);
+        float groundDistance = CheckGroundDistance();
+        return new GroundInfo(groundNormal, isGrounded, groundDistance);
     }
     private Vector3 CheckGroundNormal()
     {
         bool _isGrounded = Physics.Raycast(
             _carTransform.position, -_carTransform.up, out RaycastHit hit,
-            _groundRayLength, _groundMask);
+             _groundMask);
 
         Vector3 targetNormal = Vector3.up;
         if (_isGrounded)
@@ -33,6 +34,21 @@ public class GroundDetector
         }
 
         return targetNormal;
+    }
+    private float CheckGroundDistance()
+    {
+        bool _isGrounded = Physics.Raycast(
+            _carTransform.position, Vector3.down, out RaycastHit hit,
+            _groundRayLength, _groundMask);
+
+        float targetDistance = _groundRayLength;
+        if (!_isGrounded)
+        {
+            return 0f;
+        }
+        targetDistance = hit.distance;
+
+        return targetDistance;
     }
     private bool GroundSearch()
     {

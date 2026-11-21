@@ -1359,6 +1359,11 @@ MonoBehaviour:
   _roadLayer:
     serializedVersion: 2
     m_Bits: 128
+  _hoverAnchors:
+  - {fileID: 3391707605614723826}
+  - {fileID: 8972923398585723496}
+  - {fileID: 2998609501144410064}
+  - {fileID: 5546097463391376868}
 --- !u!114 &3237401256895037648
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -35,12 +35,17 @@ public class CarController : MonoBehaviour, IPlayerData
 
     public IPublisher<CarState, CarState> _onStateChanged
         => _onStateChange;
+
+    [SerializeField] private Transform[] _hoverAnchors = default; // 4隅を割り当てる
+    private CarHover _hover;
+
     private void Awake()
     {
         _onStateChange = new Publisher<CarState, CarState>();
         _inputReader = new InputReader(playerInput);
         _groundDetector = new GroundDetector(transform , _roadLayer);
         _driver = new CarMove(_myRigidbody, transform, _moveForce, _maxSpeed);
+        _hover = new CarHover(_myRigidbody, transform, _hoverAnchors, _roadLayer);
     }
     //フックが必要ならステートパターン
     public void FixedTick()
@@ -99,6 +104,7 @@ public class CarController : MonoBehaviour, IPlayerData
         switch (_currentState)
         {
             case CarState.Idle:
+                _hover.FixedUpdate();
                 break;
 
             case CarState.Move:
@@ -112,6 +118,10 @@ public class CarController : MonoBehaviour, IPlayerData
             case CarState.Air:
                 break;
         }
+    }
+    private void FixedUpdate()
+    {
+        _hover.FixedUpdate(); // レースの進行に関係なく常に浮かせる
     }
     private void SwitchState(CarState newState)
     {
