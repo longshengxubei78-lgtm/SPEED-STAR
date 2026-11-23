@@ -39,7 +39,7 @@ public class GroundDetector
     {
         bool _isGrounded = Physics.Raycast(
             _carTransform.position, Vector3.down, out RaycastHit hit,
-            _groundRayLength, _groundMask);
+            _groundMask);
 
         float targetDistance = _groundRayLength;
         if (!_isGrounded)

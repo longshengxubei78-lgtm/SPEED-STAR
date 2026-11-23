@@ -37,7 +37,8 @@ public class CarController : MonoBehaviour, IPlayerData
         => _onStateChange;
 
     [SerializeField] private Transform[] _hoverAnchors = default; // 4隅を割り当てる
-    private CarHover _hover;
+    private CarHover _hover; 
+    [SerializeField] private float _hoverHeight = 0.45f;
 
     private void Awake()
     {
@@ -45,7 +46,7 @@ public class CarController : MonoBehaviour, IPlayerData
         _inputReader = new InputReader(playerInput);
         _groundDetector = new GroundDetector(transform , _roadLayer);
         _driver = new CarMove(_myRigidbody, transform, _moveForce, _maxSpeed);
-        _hover = new CarHover(_myRigidbody, transform, _hoverAnchors, _roadLayer);
+        _hover = new CarHover(_myRigidbody, transform, _hoverAnchors, _roadLayer, _hoverHeight);
     }
     //フックが必要ならステートパターン
     public void FixedTick()
@@ -104,7 +105,6 @@ public class CarController : MonoBehaviour, IPlayerData
         switch (_currentState)
         {
             case CarState.Idle:
-                _hover.FixedUpdate();
                 break;
 
             case CarState.Move:
