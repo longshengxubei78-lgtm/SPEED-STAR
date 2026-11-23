@@ -6,7 +6,7 @@ public class GroundDetector
     private readonly float _groundRayLength = 1.0f;
 
     private float _maxDistance = 2f;
-    private Vector3 _halfExtents = new Vector3(0.5f, 0.01f, 1f);
+    private Vector3 _halfExtents = new Vector3(0.5f, 0.01f, 2f);
     private LayerMask _groundMask = default;
     public GroundDetector(Transform carTransform, LayerMask roadLayer)
     {
@@ -44,7 +44,7 @@ public class GroundDetector
         float targetDistance = _groundRayLength;
         if (!_isGrounded)
         {
-            return 0f;
+            return Mathf.Infinity;
         }
         targetDistance = hit.distance;
 

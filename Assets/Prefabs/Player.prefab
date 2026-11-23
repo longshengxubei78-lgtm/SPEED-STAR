@@ -1240,6 +1240,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3576603355995302034}
   - component: {fileID: 2220019577907561701}
+  - component: {fileID: 1391203773572763432}
   - component: {fileID: 8665405490455690545}
   - component: {fileID: 5736454674762857173}
   - component: {fileID: 7167873012954243332}
@@ -1291,6 +1292,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7003517, y: 0.76723325, z: 3.2406063}
   m_Center: {x: -0.012054145, y: 0.4620449, z: -0.13211918}
+--- !u!135 &1391203773572763432
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 799239341344353166}
+  m_Material: {fileID: 13400000, guid: 28121ba66041c5c4d9bd424288291e8e, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.1135905
+  m_Center: {x: 2.1316282e-13, y: 1.0342638, z: -1.359596}
 --- !u!135 &8665405490455690545
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1364,6 +1386,7 @@ MonoBehaviour:
   - {fileID: 8972923398585723496}
   - {fileID: 2998609501144410064}
   - {fileID: 5546097463391376868}
+  _hoverHeight: 0.45
 --- !u!114 &3237401256895037648
 MonoBehaviour:
   m_ObjectHideFlags: 0

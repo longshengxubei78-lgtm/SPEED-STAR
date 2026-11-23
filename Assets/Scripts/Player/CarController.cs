@@ -39,6 +39,7 @@ public class CarController : MonoBehaviour, IPlayerData
     [SerializeField] private Transform[] _hoverAnchors = default; // 4隅を割り当てる
     private CarHover _hover; 
     [SerializeField] private float _hoverHeight = 0.45f;
+    private BarrelRoll _barrelRoll = default;
 
     private void Awake()
     {
@@ -47,6 +48,7 @@ public class CarController : MonoBehaviour, IPlayerData
         _groundDetector = new GroundDetector(transform , _roadLayer);
         _driver = new CarMove(_myRigidbody, transform, _moveForce, _maxSpeed);
         _hover = new CarHover(_myRigidbody, transform, _hoverAnchors, _roadLayer, _hoverHeight);
+        _barrelRoll = new BarrelRoll(_myRigidbody, _groundDetector.GetGroundInfo());
     }
     //フックが必要ならステートパターン
     public void FixedTick()
@@ -91,7 +93,6 @@ public class CarController : MonoBehaviour, IPlayerData
 
         return CarState.Move;
     }
-
     private void FixedTick(GroundInfo groundInfo, InputInfo inputInfo)
     {
         float currentSpeed = CurrentSpeed; 
@@ -105,23 +106,22 @@ public class CarController : MonoBehaviour, IPlayerData
         switch (_currentState)
         {
             case CarState.Idle:
+                _hover.FixedUpdate();
                 break;
 
             case CarState.Move:
+                _hover.FixedUpdate();
                 _driver.DriveUpdate(inputInfo, groundInfo);
                 break;
 
             case CarState.Drift:
+                _hover.FixedUpdate();
                 _driver.DriftUpdate(inputInfo, groundInfo);
                 break;
 
             case CarState.Air:
                 break;
         }
-    }
-    private void FixedUpdate()
-    {
-        _hover.FixedUpdate(); // レースの進行に関係なく常に浮かせる
     }
     private void SwitchState(CarState newState)
     {
@@ -142,6 +142,7 @@ public class CarController : MonoBehaviour, IPlayerData
             case CarState.Drift:
                 break;
             case CarState.Air:
+                _barrelRoll.BarrelRollStart();
                 break;
         }
     }

@@ -12,8 +12,6 @@ public class CarHover
     private readonly float _springK;
     private readonly float _damperC;
 
-    public bool IsGrounded { get; private set; }
-
     public CarHover(Rigidbody rb, Transform myTransform, Transform[] anchors, LayerMask roadLayer,
                     float hoverHeight, float maxLoadRatio = 3f, float dampingRatio = 0.8f)
     {
@@ -22,12 +20,8 @@ public class CarHover
         _anchors = anchors ?? System.Array.Empty<Transform>();
         _roadLayer = roadLayer;
 
-        if (_anchors.Length == 0)
-        {
-            Debug.LogError("CarHover: _hoverAnchors が空です");
-            return;
-        }
 
+        //車の重量を支えるためのスプリング定数とダンパー定数を計算
         _restLength = hoverHeight * maxLoadRatio / (maxLoadRatio - 1f);
         float restCompression = _restLength - hoverHeight;
         float weightPerAnchor = rb.mass * Mathf.Abs(Physics.gravity.y) / _anchors.Length;
@@ -43,21 +37,19 @@ public class CarHover
         foreach (Transform anchor in _anchors)
         {
             Vector3 origin = anchor.position + up * RayStartOffset;
-            if (!Physics.Raycast(origin, -up, out RaycastHit hit, RayStartOffset + _restLength,
-                                 _roadLayer, QueryTriggerInteraction.Ignore))
+
+            if (!Physics.Raycast(origin, -up, out RaycastHit hit, RayStartOffset + _restLength, _roadLayer, QueryTriggerInteraction.Ignore))
             {
                 continue;
             }
             hitCount++;
 
             float gap = hit.distance - RayStartOffset; // アンカーと路面の距離
-            float compression = _restLength - gap;
+            float compression = _restLength - gap; 
             float velAlongUp = Vector3.Dot(_rb.GetPointVelocity(anchor.position), up);
             float force = Mathf.Max(0f, compression * _springK - velAlongUp * _damperC);
 
             _rb.AddForceAtPosition(up * force, anchor.position);
         }
-
-        IsGrounded = hitCount > 0;
     }
 }

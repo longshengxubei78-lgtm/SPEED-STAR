@@ -8,14 +8,19 @@ public class BarrelRoll
         _carRgidbody = carRgidbody;
         _groundInfo = groundInfo;
     }
-    private void BarrelRollStart()
+    public void BarrelRollStart()
     {
-        float landingTime = GetLandingTime(_groundInfo.groundDistance);
-        bool shouldRoll = RollJudgement(landingTime);
+        //if (_groundInfo.groundDistance == Mathf.Infinity)
+        //{
+        //    return;
+        //}
+        //float landingTime = GetLandingTime(_groundInfo.groundDistance);
+        //bool shouldRoll = RollJudgement(landingTime);
+        Roll();
     }
-    private void FixedTick()
+    public void FixedTick()
     {
-
+        Roll();
     }
     private void BarrelRollEnd()
     {
@@ -23,7 +28,7 @@ public class BarrelRoll
     }
     private void Roll()
     {
-
+        _carRgidbody.AddTorque(_carRgidbody.transform.forward * 200000f, ForceMode.Force);
     }
     private float GetLandingTime(float fallHeight)
     {
@@ -34,7 +39,6 @@ public class BarrelRoll
     {
         float rollValue = _carRgidbody.angularVelocity.magnitude;
 
-        //０除算回避
         if (rollValue < 0.001f)
         {
             return false;
